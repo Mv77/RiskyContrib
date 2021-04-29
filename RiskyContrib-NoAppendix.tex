@@ -1,0 +1,79 @@
+\documentclass[./RiskyContrib.tex]{subfiles}\input{./econtexRoot}
+% Different execution depending on whether compiling main file or as standalone subfile
+\onlyinsubfile{\externaldocument{RiskyContrib}} % Get xrefs -- esp to appendix 
+%-- from main file; only works properly if main file has already been compiled; 
+%order: Compile this file, then main, then this one again
+\begin{document}
+
+\hfill{\tiny \texname.tex, \today}
+
+\begin{verbatimwrite}{RiskyContrib.title}  % Write title to .title file
+A Two-Asset Savings Model with an Income-Contribution Scheme\\
+REMARK
+\end{verbatimwrite}
+
+\title{A Two-Asset Savings Model with an Income-Contribution Scheme\\
+REMARK}
+
+\author{Mateo Vel\'asquez-Giraldo}
+
+\keywords{Lifecycle, Portfolio Choice, Social Security, Replication}
+
+\maketitle 
+
+\hypertarget{abstract}{}
+\begin{abstract}
+This paper contains the highlights from the REMARK file in Code>Python folder.
+\end{abstract}
+
+% Various resources 
+\hypertarget{links}{}
+\begin{small}
+\parbox{\textwidth}{
+\begin{center}
+\begin{tabbing}
+\texttt{~Archive:~} \= \= \url{http://econ.jhu.edu/people/ccarroll/BufferStockTheory.zip} \kill \\  %
+\texttt{~~GitHub:~} \> \> 
+\url{http://github.com/econ-ark/REMARK/REMARKS/CGMPortfolio} \\
+\texttt{~~~~~~~~~~} \> \> \textit{(In GitHub repo, see \texttt{/Code} for tools for solving and simulating the model)} \\
+\end{tabbing}
+\end{center}
+          
+\href{https://mybinder.org/v2/gh/matthew-zahn/CGMPort/develop?filepath=REMARK\%2FCGM_REMARK.ipynb}{CLICK HERE} for an interactive \href{https://en.wikipedia.org/wiki/Project\_Jupyter\#Jupyter_Notebook}{Jupyter Notebook} that uses the \href{https://econ-ark/HARK}{Econ-ARK/HARK} toolkit to produce our figures (warning: it may take several minutes to launch).  Information about citing the toolkit can be found at \href{https://econ-ark.org/acknowledging/}{Acknowleding Econ-ARK}.
+} % end parbox{\textwidth}
+\end{small}
+
+\begin{authorsinfo}
+\name{Contact: \href{mailto:mvelasq2@jhu.edu}{\texttt{mvelasq2@jhu.edu}}, \href{mailto:matthew.zahn@jhu.edu}{\texttt{matthew.zahn@jhu.edu}}, Department of Economics, 590 Wyman Hall, Johns Hopkins University, Baltimore, MD 21218, \url{https://t.co/uaflostQyF?amp=1}, \url{http://matthewvzahn.com}.}
+\end{authorsinfo}
+
+\thanks{All numerical results herein were produced using the \href{https://econ-ark/HARK}{Econ-ARK/HARK} toolkit; for further reference options see \href{https://econ-ark.org/acknowledging/}{Acknowleding Econ-ARK}.  Thanks to Chris Carroll and Sylvain Catherine for comments and guidance.}
+
+\titlepagefinish
+
+\newtheorem{defn}{Definition}
+\newtheorem{theorem}{Theorem}
+
+\hypertarget{Introduction}{}
+\section{Introduction}
+
+\hypertarget{The-base-model}{}
+\section{The base model}
+
+\hypertarget{Calibration}{}
+\section{Calibration\textemdash Summary}
+
+\hypertarget{Conclusion}{}
+\section{Conclusion}
+
+\hypertarget{Puzzles-and-Questions}{}
+\section{Puzzles and Questions}\label{sec:Puzzles}
+
+\hypertarget{Robustness Analyses}{}
+\section{Robustness Analyses}
+
+\clearpage\vfill\eject
+
+\onlyinsubfile{\bibliography{\econtexRoot/CGMPortfolio-Add}}
+
+\end{document}

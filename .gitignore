@@ -1,3 +1,12 @@
+# Latex auxiliary files
+
+*.aux
+*.out
+*.dep
+*.bbl
+*.blg
+*.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
