@@ -7,6 +7,52 @@ Created on Thu Apr 29 11:47:33 2021
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+
+def pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals):
+
+    # Create tiled arrays for Reb and Sha stages
+    m_tiled, n_tiled = np.meshgrid(mNrmGrid, nNrm_vals)
+    
+    dframes = []
+    
+    # Rebalancing
+    for a in agents:
+        d = agents[a].solution[t].stageSols['Reb'].DFuncAdj(m_tiled, n_tiled)
+        data = pd.DataFrame({'m': m_tiled.flatten(),
+                             'n': n_tiled.flatten(),
+                             'value': d.flatten()})
+        data['model'] = a
+        data['control'] = 'd'
+        
+        dframes.append(data)
+    
+    # Contrib share
+    for a in agents:
+        s = agents[a].solution[t].stageSols['Sha'].ShareFuncAdj(m_tiled, n_tiled)
+        data = pd.DataFrame({'m': m_tiled.flatten(),
+                             'n': n_tiled.flatten(),
+                             'value': s.flatten()})
+        data['model'] = a
+        data['control'] = 'Share'
+        
+        dframes.append(data)
+    
+    # Consumption
+    m_tiled, n_tiled, Share_tiled = np.meshgrid(mNrmGrid, nNrm_vals, Share_vals)
+    for a in agents:
+        c = agents[a].solution[t].stageSols['Cns'].cFunc(m_tiled, n_tiled, Share_tiled)
+        data = pd.DataFrame({'m': m_tiled.flatten(),
+                             'n': n_tiled.flatten(),
+                             'Share': Share_tiled.flatten(),
+                             'value': c.flatten()})
+        data['model'] = a
+        data['control'] = 'c'
+        
+        dframes.append(data)
+    
+    
+    return pd.concat(dframes)
 
 # %% Define a plotting function
 def plotFuncs3D(functions,bottom,top,N=300,titles = None, ax_labs = None):

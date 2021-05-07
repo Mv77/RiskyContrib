@@ -2,15 +2,18 @@
 '''
 Example implementations of HARK.ConsumptionSaving.ConsPortfolioModel
 '''
-from HARK.ConsumptionSaving.ConsRiskyAssetModel import RiskyContribConsumerType, init_riskyContrib
+from HARK.ConsumptionSaving.ConsRiskyAssetModel import RiskyContribConsumerType, init_risky_contrib
 from time import time
+from copy import copy
 
-from tools import plotSlices3D, plotSlices4D
+import numpy as np
+import seaborn as sns
+from tools import pol_funcs_dframe
 
 # %% Base parametrization
 
 # Make the problem infinite horizon
-par_infinite_base = init_riskyContrib.copy()
+par_infinite_base = init_risky_contrib.copy()
 par_infinite_base['cycles']   = 0
 
 # and frictionless to start
@@ -21,39 +24,55 @@ par_infinite_base['tau'] = 0.0
 par_infinite_base['DiscreteShareBool'] = False
 par_infinite_base['vFuncBool'] = False
 
-# %%
-# Solve base version
+# Temporarily make grids sparser
+par_infinite_base.update({
+    "aXtraCount": 30,
+    "mNrmCount": 30,
+    "nNrmCount": 30,
+})
 
-# Create agent and solve it.
-inf_base_agent = RiskyContribConsumerType(**par_infinite_base)
-print('Now solving base version')
-t0 = time()
-inf_base_agent.solve(verbose = True)
-t1 = time()
-print('Converged!')
-print('Solving took ' + str(t1-t0) + ' seconds.')
+# %% A version with the tax
+par_infinite_tax = copy(par_infinite_base)
+par_infinite_tax['tau'] = 0.1
 
-# Plot policy functions
-periods = [0]
-n_slices = [0,2,6]
-mMax = 20
+# %% A version with the Calvo friction
+par_infinite_calvo = copy(par_infinite_base)
+par_infinite_calvo["AdjustPrb"] = 0.25
 
-DFuncAdj     = [inf_base_agent.solution[t].stageSols['Reb'].DFuncAdj for t in periods]
-ShareFuncSha = [inf_base_agent.solution[t].stageSols['Sha'].ShareFuncAdj for t in periods]
-cFuncFxd     = [inf_base_agent.solution[t].stageSols['Cns'].cFunc for t in periods]
+# %% Create and solve agents with all the parametrizations
 
-# Rebalancing
-plotSlices3D(DFuncAdj,0,mMax,y_slices = n_slices,y_name = 'n',
-             titles = ['t = ' + str(t) for t in periods],
-             ax_labs = ['m','d'])
-# Share
-plotSlices3D(ShareFuncSha,0,mMax,y_slices = n_slices,y_name = 'n',
-             titles = ['t = ' + str(t) for t in periods],
-             ax_labs = ['m','S'])
+agents = {'Base': RiskyContribConsumerType(**par_infinite_base),
+          'Tax': RiskyContribConsumerType(**par_infinite_tax),
+          'Calvo': RiskyContribConsumerType(**par_infinite_calvo)}
 
-# Consumption
-shares = [0., 0.9]
-plotSlices4D(cFuncFxd,0,mMax,y_slices = n_slices,w_slices = shares,
-             slice_names = ['n_til','s'],
-             titles = ['t = ' + str(t) for t in periods],
-             ax_labs = ['m_til','c'])
+for agent in agents:
+    
+    print('Now solving ' + agent)
+    t0 = time()
+    agents[agent].solve(verbose = True)
+    t1 = time()
+    print('Solving ' + agent +' took ' + str(t1-t0) + ' seconds.')
+    
+# %% Plots
+
+t = 0
+mNrmGrid = np.linspace(0,50,100)
+nNrm_vals = np.array([0.0, 10.0, 20])
+Share_vals = np.array([0.0, 0.5])
+
+polfuncs = pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals)
+
+# Rebalancing fraction
+g = sns.FacetGrid(polfuncs[polfuncs.control == "d"], col="n", hue = "model")
+g.map(sns.lineplot, "m", "value", alpha=.7)
+g.add_legend()
+
+# Share fraction
+g = sns.FacetGrid(polfuncs[polfuncs.control == "Share"], col="n", hue = "model")
+g.map(sns.lineplot, "m", "value", alpha=.7)
+g.add_legend()
+
+# Consumption fraction
+g = sns.FacetGrid(polfuncs[polfuncs.control == "c"], col="n", row = "Share", hue = "model")
+g.map(sns.lineplot, "m", "value", alpha=.7)
+g.add_legend()

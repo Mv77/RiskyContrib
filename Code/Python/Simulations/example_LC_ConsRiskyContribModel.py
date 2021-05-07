@@ -252,35 +252,36 @@ print('Solving took ' + str(t1-t0) + ' seconds.')
 
 # %% Policy function inspection
 
-periods = range(t_end - t_start + 1)
-n_slices = [0,2,6]
-mMax = 20
-
-DFuncAdj     = [ContribAgent.solution[t].stageSols['Reb'].DFuncAdj for t in periods]
-ShareFuncSha = [ContribAgent.solution[t].stageSols['Sha'].ShareFuncAdj for t in periods]
-cFuncFxd     = [ContribAgent.solution[t].stageSols['Cns'].cFunc for t in periods]
-
-# Create projected consumption functions at different points of the share grid
-shares = [0., 0.2]
-
-for t in periods:
+if False:
+    periods = range(t_end - t_start + 1)
+    n_slices = [0,2,6]
+    mMax = 20
     
-    plotSlices3D(DFuncAdj[t],0,mMax,y_slices = n_slices,y_name = 'n',
-                 titles = ['t = ' + str(t)],
-                 ax_labs = ['m','d'])
-
-for t in periods:
+    DFuncAdj     = [ContribAgent.solution[t].stageSols['Reb'].DFuncAdj for t in periods]
+    ShareFuncSha = [ContribAgent.solution[t].stageSols['Sha'].ShareFuncAdj for t in periods]
+    cFuncFxd     = [ContribAgent.solution[t].stageSols['Cns'].cFunc for t in periods]
     
-    plotSlices3D(ShareFuncSha[t],0,mMax,y_slices = n_slices,y_name = 'n',
-                 titles = ['t = ' + str(t)],
-                 ax_labs = ['m','S'])
-
-for t in periods:
+    # Create projected consumption functions at different points of the share grid
+    shares = [0., 0.2]
     
-    plotSlices4D(cFuncFxd[t],0,mMax,y_slices = n_slices,w_slices = shares,
-                 slice_names = ['n_til','s'],
-                 titles = ['t = ' + str(t)],
-                 ax_labs = ['m_til','c'])
+    for t in periods:
+        
+        plotSlices3D(DFuncAdj[t],0,mMax,y_slices = n_slices,y_name = 'n',
+                     titles = ['t = ' + str(t)],
+                     ax_labs = ['m','d'])
+    
+    for t in periods:
+        
+        plotSlices3D(ShareFuncSha[t],0,mMax,y_slices = n_slices,y_name = 'n',
+                     titles = ['t = ' + str(t)],
+                     ax_labs = ['m','S'])
+    
+    for t in periods:
+        
+        plotSlices4D(cFuncFxd[t],0,mMax,y_slices = n_slices,w_slices = shares,
+                     slice_names = ['n_til','s'],
+                     titles = ['t = ' + str(t)],
+                     ax_labs = ['m_til','c'])
 
 # %%  Simulate this consumer type
 ContribAgent.track_vars = ['pLvl','t_age','Adjust',
