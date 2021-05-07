@@ -60,6 +60,300 @@ This paper contains the highlights from the REMARK file in Code>Python folder.
 \hypertarget{The-base-model}{}
 \section{The base model}
 
+\subsection{Life-Cycle Model}\label{sec:mod_lc}
+
+The life-cycle model resembles that in \cite{Cocco2005rfs}, with modifications
+to the portfolio allocation problem and the income process. I now discuss the main
+components of the model, which I summarize in its formal recursive representation
+in Appendix \ref{app:lc_model_recursive}.
+
+\subsubsection{Lifespan, mortality, and utility}
+
+Agents enter the model at age 24 and can live up to a maximum age of 100.
+Each  period, they face an exogenous risk of death that becomes certain at the 
+maximum age. There are no intentional bequests: agents will consume all of their 
+resources if they make it to the maximum age, but can leave accidental 
+bequests upon premature death.
+
+In each period, agents derive utility from consumption only. 
+Their utility function follows a constant relative risk aversion 
+specification. Formally, for a level of 
+consumption $C$, the agent derives instant utility
+\begin{equation}
+	u(C) = \frac{C^{1-\rho}}{1- \rho}.
+\end{equation}
+
+\subsubsection{Income process}
+
+Agents supply labor inelastically and retire exogenously at age 
+65. Pre-retirement labor earnings $Y_{i,t}$ are the product of a permanent
+component $P_{i,t}$ and a transitory stochastic component $\theta_{i,t}$ as
+in \cite{Carroll1997qje}. Formally,
+\begin{equation*}
+\begin{split}
+\ln Y_{i,t} &= \ln P_{i,t} + \ln \theta_{i,t} \\
+\ln P_{i,t} &= \ln P_{i,t-1} + \ln \Gamma_{i,t} + \ln \psi_{i,t}
+\end{split}
+\end{equation*}
+where $\Gamma_{i,t}$ is a deterministic growth factor that captures
+life-cycle patterns in earnings, and
+$\ln \psi_{i,t}\sim \mathcal{N}(-\sigma^2_{\psi,t}/2, \sigma_{\psi,t})$
+is a multiplicative shock to permanent income\footnote{The mean of the shock is set so that $E[\psi_{i,t}] = 1$.}.
+
+The transitory component $\theta_{i,t}$ is a mixture that models unemployment and
+other temporal fluctuations in income as
+\begin{equation*}
+\ln\theta_{i,t} = \begin{cases}
+\ln \mathcal{U}, & \text{With probability } \mho\\
+\ln \tilde{\theta}_{i,t}\sim\mathcal{N}(-\sigma^2_{\theta,t}/2, \sigma_{\theta,t}), & \text{With probability } 1-\mho,
+\end{cases}
+\end{equation*}
+with $\mho$ representing the probability of unemployment and $\mathcal{U}$ the replacement
+factor of unemployment benefits.
+
+\begin{figure}
+\begin{center}
+%\includegraphics[width=\linewidth]{\FigDir/RESULTS/Determ_income_paths}
+\caption{Deterministic Component of Income by Education Level}\label{fig:income_paths}
+\end{center}
+\end{figure}
+
+The sequences of growth factors $\{\Gamma_{i,t}\}_{t=25}^{100}$ vary by educational attainment,
+and their calibration comes from \cite{Cagetti2003jbes}. Figure \ref{fig:income_paths}
+displays the income paths that individuals with different education levels would experience
+in the absence of shocks\footnote{This is $P_{i,24}\times\prod_{j=25}^{t} \Gamma_{i,t}$.}. The
+decline at age 65 corresponds to retirement and after this point income becomes deterministic,
+following $Y_{i,t} = P_{i,t} = P_{i,t-1}\Gamma_{i,t}$.
+
+\begin{figure}
+\begin{center}
+%\includegraphics[width=\linewidth]{\FigDir/RESULTS/Income_volatility_paths}
+\caption{Age Profiles of Income Volatility}\label{fig:volat_paths}
+\end{center}
+\end{figure}
+
+An important advance in life-cycle modeling has been the recognition that
+the volatility of income varies with age. \cite{Sabelhaus2010jme} estimate
+age profiles of both transitory and permanent shock volatilities, which I
+incorporate as the values of $\{\sigma_{\theta,t}, \sigma_{\psi,t}\}_{t=24}^{64}$.
+Figure \ref{fig:volat_paths} presents these volatilities, which are large and have
+a clear downward trend in age. Income fluctuations are the main motive for saving
+at early ages in the model and therefore these volatility patterns will have
+implications for portfolio choice.
+
+\subsubsection{Financial assets and frictions}\label{sec:fin_frictions}
+
+Agents smooth their consumption by saving and have two assets
+available for this purpose. The first is a risk-free liquid account with 
+constant per-period return factor $R$. The second represents stocks
+and has a stochastic return factor $\tilde{R}$ that agents view as 
+log-normally distributed and independent across time. Importantly,
+consumption must be paid for using funds from the risk-free liquid account.
+The levels of risk-free and risky assets owned by the agent will both be state
+variables, denoted with $M_{i,t}$ and $N_{i,t}$ respectively.
+
+Portfolio rebalancing takes place by moving funds between the risk-free
+and risky accounts. These flows are one of the agents' control variables
+and are denoted as $D_{i,t}$, with $D_{i,t}>0$ representing a movement of
+funds from the risk-free to the risky account. Withdrawals from the risky
+account are taxed at a constant rate $\tau$, representing capital taxes or
+early retirement fund withdrawal penalties. In sum, denoting post-rebalancing
+levels with
+$\tilde{\cdot}$,
+\begin{equation*}
+\begin{split}
+\tilde{M}_{i,t} &= M_{i,t} - D_{i,t}(1 - 1_{[D_{i,t}\leq0]}\tau)\\
+\tilde{N}_{i,t} &= N_{i,t} + D_{i,t}.
+\end{split}
+\end{equation*}
+
+At any given period, an agent might not be able to rebalance his portfolio.
+This ability is governed by an exogenous stochastic shock that is realized
+at the start of the period
+\begin{equation*}
+\Adj_t \sim \text{Bernoulli}(p_t),
+\end{equation*}
+with $\Adj_t=1$ meaning that the agent can rebalance and $\NAdj_t=1$ ($\Adj_t = 0$)
+forcing him to set $D_{i,t} = 0$. This friction is a parsimonious way to capture
+the fact that portfolio rebalancing is costly and households do it sporadically
+\cite{Giglio2019nber}.
+
+To partially evade the possibility of being unable to rebalance their accounts, agents
+can use an income deduction scheme. By default, labor income and retirement
+benefits ($Y_{i,t}$) are deposited to the risk-free liquid account at the start
+of the period. However, agents can pre-commit to have a fraction  $\Contr_t\in[0,1]$
+of their income diverted to their risky account instead. This fraction can be
+tweaked by the agent whenever $\Adj_t = 1$; otherwise it stays at its
+previous value, $\Contr_{t+1} = \Contr_t$.
+
+These frictions to stockholding represent a departure from the usual modeling
+approach that is followed in the literature. The most usual friction to
+stockholding in the literature is a fixed monetary cost that agents must pay
+every period in which they hold stocks. This framework's convenience comes from
+only having to track total wealth as a state variable---as opposed to tracking
+both $M_{i,t}$ and $N_{i,t}$---as agents risky-asset positions are liquidated
+every period before they decide whether to enter the stock market again. 
+
+\begin{figure}
+\begin{center}
+%\includegraphics[width = \linewidth]{\FigDir/SUMSTATS/Rebalancing_by_wave}
+\end{center}
+\caption{Portfolio Rebalancing in the HRS}\label{fig:rebalancing}
+\end{figure}
+
+While convenient, this framework has problematic implications. First, it assumes
+that agents liquidate their portfolios and decide whether to re-enter the stock
+market every period, with the friction placed on this decision. This implication
+contradicts the fact that people rarely rebalance their portfolios as shown by 
+Figure \ref{fig:rebalancing}. One can imagine that if a person starts a
+period with $90\%$ of their wealth in stocks, the path of least resistance
+for them would be to preserve their portfolio instead of fully liquidating it.
+A second problem that this friction introduces in heterogeneous agent models
+is selection; an entry barrier limits stockholders to be those whose eagerness
+overcomes the cost and therefore it raises the share of wealth invested in stocks
+conditional on participation above the already-too-high prediction of the
+frictionless model.
+
+\begin{figure}
+\begin{center}
+%	\includegraphics[width=\linewidth]{\FigDir/RESULTS/Frict_sim_CONDSHARE_slides}
+\end{center}
+\scriptsize ``Frictionless'' corresponds to a version of the model in which
+agents can always adjust their portfolio ($\{p_t\}_{t=24}^{100} = 1$) and are
+not subject to taxes ($\tau = 0$). ``Tax'' is a version in which $\tau = 0.1$.
+``Calvo'' is a version in which agents have a $25\%$ chance of being able to
+rebalance in every period ($\{p_t\}_{t=24}^{100} = 0.25$). ``Tax $+$ Calvo''
+is a version with the two previous frictions added simultaneously.
+
+\caption{Frictions and Their Interaction With Beliefs.}\label{fig:frict_beliefs}
+\end{figure}
+
+Figure \ref{fig:frict_beliefs} shows the effects of the frictions in my model
+on the share of wealth in stocks conditional on participation, and their
+interaction with beliefs about the equity premium. A major challenge in the
+life-cycle portfolio literature is explaining the low share of wealth that
+young people place in stocks (compare Figures \ref{fig:moments_data} and
+\ref{fig:frict_beliefs}). Figure \ref{fig:frict_beliefs} shows that pessimism
+about the equity premium combined with either the tax or stochastic rebalancing
+friction can substantially reduce the conditional share of young agents, flattening
+its age profile and bringing it closer to the data
+(see Figure \ref{fig:moments_data}). The interaction between pessimistic beliefs
+and frictions to rebalancing will be my strategy for improving the fit of the
+life cycle model.
+
+\subsubsection{Timing}
+
+\begin{figure}
+
+\begin{center}
+%\resizebox{\linewidth}{!}{
+%\input{\FigDir/Timing_diagram}
+%}
+\caption{Summary of Timing in the Life Cycle Model}\label{fig:timing_diagram}
+\end{center}
+\end{figure}
+
+Figure \ref{fig:timing_diagram} summarizes the timing of stochastic shocks and
+optimizing decisions that occur within a period of the life cycle model.
+
+\hypertarget{Recursive}{}
+\section{Recursive representation of the model}
+
+
+Individual subscripts are dropped for simplicity. The value function for
+an agent who is not allowed to rebalance his portfolio at time $t$ is
+\begin{equation*}
+    \input{\EqDir/bellman_NAdj}
+\end{equation*}
+and that of agent who is allowed to rebalance is
+\begin{equation*}
+    \input{\EqDir/bellman_Adj}
+\end{equation*}
+
+The problem can be normalized by permanent income, following
+\cite{Carroll2020solvingmicrodsops}. Using lower case variables to
+denote their upper-case counterparts normalized by permanent income ($x_t = X_t/P_t$)
+and defining $\tilde{\Gamma}_t = \Gamma_{t}\psi_{t}$, we can write
+normalized problems
+\begin{equation}\label{eq:bellman_NAdj_norm}
+\input{\EqDir/bellman_NAdj_norm}
+\end{equation}
+and
+\begin{equation*}
+\input{\EqDir/bellman_Adj_norm}
+\end{equation*}
+It can be shown that
+\begin{equation*}
+V_{t}^{\Adj}(M_t,N_t,P_t) = P_t^{1-\rho} v_{t}^{\Adj}(m_t,n_t), \quad
+V_{t}^{\NAdj}(M_t,N_t,P_t,\Contr_t) = P_t^{1-\rho} v_{t}^{\NAdj}(m_t,n_t,\Contr_t),
+\end{equation*}
+and that the policy functions of both problems are related through
+\begin{equation*}
+\begin{split}
+C_t^{\NAdj}(M_t,N_t,P_t,\Contr_t) = P_t c_t^{\NAdj}(m_t,n_t,\Contr_t),& \quad C_t^{\Adj}(M_t,N_t,P_t) = P_t c_t^{\Adj}(m_t,n_t),\\
+D_t(M_t,N_t,P_t) = P_t d_t(m_t,n_t),& \quad \Contr_{t+1}(M_t,N_t) = \Contr_{t+1}(m_t,n_t).
+\end{split}
+\end{equation*}
+Therefore, I solve the normalized problem and re-scale its solutions to obtain
+the original problem's solutions.
+
+\subsection{Partition into stages}
+
+An additional insight to facilitate solving the model is that the three decisions
+that an agent might take in a period (rebalancing his assets, choosing his income
+deduction fraction and consuming) can be seen as happening sequentially. This is
+convenient because:
+\begin{itemize}
+\item The sub-problems are easier to solve than the multi-choice full problem.
+\item Since the non-adjusting agent only chooses his consumption and we must
+solve his problem for every combination of $(m_t, n_t, \zeta_t=\zeta_{t+1})$, we can re-utilize
+his solution by expressing the adjusting agent's  problem as
+\begin{equation*}
+v_t^{\Adj}(m_t,n_t) = \max_{\tilde{m}_t, \tilde{n}_t, \Contr_{t+1}} v_t^{\NAdj}(\tilde{m}_t, \tilde{n}_t, \Contr_{t+1}).
+\end{equation*}
+\end{itemize}
+
+To start re-expressing the problem, take the order of the decisions to be: rebalance
+assets, then define income contribution share, then consume, and denote the stages
+at which these decisions are taken with $\Reb$, $\Sha$, and $\Cns$. I will use
+$v^{\Reb}(\cdot)$, $v^{\Sha}(\cdot)$ and $v^{\Cns}(\cdot)$ to represent
+\emph{stage value functions}.
+
+I now present each stage in detail, working backwards in time.
+
+\subsubsection{Consumption stage, $\Cns$}
+
+An agent who takes his assets and income contribution share as given is one who
+can not adjust them and can only choose his consumption. This corresponds to the
+problem of the non-adjusting agent (Equation \ref{eq:bellman_NAdj_norm}). The
+important facts to realize at this stage are that
+\begin{equation*}
+v_t^{\Adj}(m_t, n_t) = v_t^{\Reb}(m_t, n_t), \quad v_t^{\NAdj}(m_t, n_t, \Contr_t) = v_t^{\Cns}(m_t, n_t, \Contr_t),
+\end{equation*}
+with the first fact being true because we have assumed that asset rebalancing
+is the first decision that an adjusting agent takes, and he assumes that his
+subsequent decisions will be optimal. Therefore, the consumption stage problem is
+\begin{equation*}
+\input{\EqDir/bellman_cns}
+\end{equation*}
+
+\subsubsection{Income contribution share stage, $\Sha$}
+
+An agent with the option to set his income contribution share will do so
+taking his asset allocation as given and assuming that he will optimally
+pick his consumption in the next stage. His problem is
+\begin{equation*}
+\input{\EqDir/bellman_sha}
+\end{equation*}
+
+\subsubsection{Rebalancing stage, $\Reb$}
+
+The first decision that an agent takes, if allowed, is how to reallocate his
+assets.
+\begin{equation*}
+\input{\EqDir/bellman_reb}
+\end{equation*}
+
 \hypertarget{Calibration}{}
 \section{Calibration\textemdash Summary}
 

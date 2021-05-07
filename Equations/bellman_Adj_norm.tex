@@ -1,0 +1,15 @@
+\begin{split}
+v^{\Adj}_{t}(m_t, n_t) = \max_{c_t,d_t,\Contr_{t+1}} 
+u(c_t) + p_{t+1} &\beta\delta_{t+1} E_t \left[ \tilde{\Gamma}_{t+1}^{1-\rho}  v^{\Adj}_{t+1}\left( m_{t+1}, 
+n_{t+1} \right)\right] +\\
+\left(1-p_{t+1}\right) &\beta\delta_{t+1} E_t\left[\tilde{\Gamma}_{t+1}^{1-\rho} v^{\NAdj}_{t+1}\left(m_{t+1}, 
+n_{t+1}, \Contr_{t+1}\right) \right]\\
+\text{Subject to:} \quad &\\
+-n_t \leq d_t \leq m_t, \quad \Contr_{t+1} \in& [0,1], \quad 0 \leq c_t \leq \tilde{m}_t\\
+\hfill\\
+\tilde{m}_{t} =& m_t - d_t\left(1-1_{[d_t\leq0]}\tau\right)\\
+\tilde{n}_{t} =& n_t + d_t\\
+a_t =& \tilde{m}_t - c_t \\
+m_{t+1} =& \frac{R}{\tilde{\Gamma}_{t+1}} a_t + (1-\Contr_{t+1})\theta_{t+1}\\
+n_{t+1} =& \frac{\tilde{R}_{t+1}}{\tilde{\Gamma}_{t+1}}\tilde{n}_{t} + \Contr_{t+1}\theta_{t+1}
+\end{split}

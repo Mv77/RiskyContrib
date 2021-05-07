@@ -1,0 +1,15 @@
+\begin{split}
+V^{\NAdj}_{t}(M_t, N_t, P_t, \Contr_t) = \max_{C_t} u(C_t) 
++ p_{t+1} &\beta\delta_{t+1} E_t \left[  V^{\Adj}_{t+1}\left( M_{t+1}, N_{t+1}, 
+P_{t+1} \right)\right] +\\
+\left(1-p_{t+1}\right) &\beta\delta_{t+1} E_t\left[V^{\NAdj}_{t+1}\left(M_{t+1}, 
+N_{t+1}, P_{t+1}, \Contr_{t+1}\right) \right]\\
+\text{Subject to:} \quad &\\
+0\leq& C_t \leq M_t \\
+A_t =& M_t - C_t \\
+M_{t+1} =& R A_t + (1-\Contr_{t+1}) Y_{t+1}\\
+N_{t+1} =& \tilde{R}_{t+1}N_t + \Contr_{t+1}Y_{t+1}\\
+P_{t+1} =& \Gamma_{t+1} \psi_{t+1} P_{t}\\
+Y_{t+1} =& \theta_{t+1} P_{t+1}\\
+\Contr_{t+1} =& \Contr_t
+\end{split}
