@@ -62,17 +62,23 @@ Share_vals = np.array([0.0, 0.5])
 
 polfuncs = pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals)
 
+# General aesthetics
+sns.set_style("whitegrid")
+
 # Rebalancing fraction
 g = sns.FacetGrid(polfuncs[polfuncs.control == "d"], col="n", hue = "model")
-g.map(sns.lineplot, "m", "value", alpha=.7)
+g.map(sns.lineplot, "m", "value", alpha=.7, linewidth = 2)
 g.add_legend()
+g.set_axis_labels('m', 'Normalized Rebalancing Flow: d')
 
 # Share fraction
 g = sns.FacetGrid(polfuncs[polfuncs.control == "Share"], col="n", hue = "model")
-g.map(sns.lineplot, "m", "value", alpha=.7)
+g.map(sns.lineplot, "m", "value", alpha=.7, linewidth = 2)
 g.add_legend()
+g.set_axis_labels(r'$\tilde{m}$', 'Income Deduct. Share')
 
 # Consumption fraction
 g = sns.FacetGrid(polfuncs[polfuncs.control == "c"], col="n", row = "Share", hue = "model")
-g.map(sns.lineplot, "m", "value", alpha=.7)
+g.map(sns.lineplot, "m", "value", alpha=.7, linewidth = 2)
 g.add_legend()
+g.set_axis_labels(r'$\tilde{m}$', r'Consumption: $c$')
