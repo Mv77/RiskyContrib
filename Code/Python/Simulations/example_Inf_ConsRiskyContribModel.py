@@ -1,59 +1,146 @@
 # %%
-'''
+"""
 Example implementations of HARK.ConsumptionSaving.ConsPortfolioModel
-'''
-from HARK.ConsumptionSaving.ConsRiskyAssetModel import RiskyContribConsumerType, init_riskyContrib
+"""
+from HARK.ConsumptionSaving.ConsRiskyAssetModel import (
+    RiskyContribConsumerType,
+    init_risky_contrib,
+)
 from time import time
+from copy import copy
 
-from tools import plotSlices3D, plotSlices4D
+import numpy as np
+import seaborn as sns
+from tools import pol_funcs_dframe
+import os
 
 # %% Base parametrization
 
 # Make the problem infinite horizon
-par_infinite_base = init_riskyContrib.copy()
-par_infinite_base['cycles']   = 0
+par_infinite_base = init_risky_contrib.copy()
+par_infinite_base["cycles"] = 0
 
 # and frictionless to start
-par_infinite_base['AdjustPrb'] = 1.0
-par_infinite_base['tau'] = 0.0
+par_infinite_base["AdjustPrb"] = 1.0
+par_infinite_base["tau"] = 0.0
 
 # Make contribution shares a continuous choice
-par_infinite_base['DiscreteShareBool'] = False
-par_infinite_base['vFuncBool'] = False
+par_infinite_base["DiscreteShareBool"] = False
+par_infinite_base["vFuncBool"] = False
 
-# %%
-# Solve base version
+# Temporarily make grids sparser
+par_infinite_base.update(
+    {"aXtraCount": 30, "mNrmCount": 30, "nNrmCount": 30,}
+)
 
-# Create agent and solve it.
-inf_base_agent = RiskyContribConsumerType(**par_infinite_base)
-print('Now solving base version')
-t0 = time()
-inf_base_agent.solve(verbose = True)
-t1 = time()
-print('Converged!')
-print('Solving took ' + str(t1-t0) + ' seconds.')
+# %% A version with the tax
+par_infinite_tax = copy(par_infinite_base)
+par_infinite_tax["tau"] = 0.1
 
-# Plot policy functions
-periods = [0]
-n_slices = [0,2,6]
-mMax = 20
+# %% A version with the Calvo friction
+par_infinite_calvo = copy(par_infinite_base)
+par_infinite_calvo["AdjustPrb"] = 0.25
 
-DFuncAdj     = [inf_base_agent.solution[t].stageSols['Reb'].DFuncAdj for t in periods]
-ShareFuncSha = [inf_base_agent.solution[t].stageSols['Sha'].ShareFuncAdj for t in periods]
-cFuncFxd     = [inf_base_agent.solution[t].stageSols['Cns'].cFunc for t in periods]
+# %% Create and solve agents with all the parametrizations
 
-# Rebalancing
-plotSlices3D(DFuncAdj,0,mMax,y_slices = n_slices,y_name = 'n',
-             titles = ['t = ' + str(t) for t in periods],
-             ax_labs = ['m','d'])
-# Share
-plotSlices3D(ShareFuncSha,0,mMax,y_slices = n_slices,y_name = 'n',
-             titles = ['t = ' + str(t) for t in periods],
-             ax_labs = ['m','S'])
+agents = {
+    "Base": RiskyContribConsumerType(**par_infinite_base),
+    "Tax": RiskyContribConsumerType(**par_infinite_tax),
+    "Calvo": RiskyContribConsumerType(**par_infinite_calvo),
+}
 
-# Consumption
-shares = [0., 0.9]
-plotSlices4D(cFuncFxd,0,mMax,y_slices = n_slices,w_slices = shares,
-             slice_names = ['n_til','s'],
-             titles = ['t = ' + str(t) for t in periods],
-             ax_labs = ['m_til','c'])
+for agent in agents:
+
+    print("Now solving " + agent)
+    t0 = time()
+    agents[agent].solve(verbose=True)
+    t1 = time()
+    print("Solving " + agent + " took " + str(t1 - t0) + " seconds.")
+
+# %% Hark plot setup
+from HARK.utilities import (
+    determine_platform,
+    test_latex_installation,
+    setup_latex_env_notebook,
+)
+
+pf = determine_platform()
+try:
+    latexExists = test_latex_installation(pf)
+except ImportError:  # windows and MacOS requires manual install
+    latexExists = False
+
+setup_latex_env_notebook(pf, latexExists)
+
+# Whether to save the figures to Figures_dir
+saveFigs = True
+
+# Whether to draw the figures
+drawFigs = True
+
+
+def make(fig, name, target_dir="../../../Figures"):
+    fig.savefig(os.path.join(target_dir, "{}.pdf".format(name)))
+
+
+# %% Plots
+
+
+t = 0
+mNrmGrid = np.linspace(0, 40, 100)
+nNrm_vals = np.array([0.0, 20.0, 40])
+Share_vals = np.array([0.0, 0.5])
+
+polfuncs = pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals)
+
+# General aesthetics
+sns.set_style("whitegrid")
+sns.set_context("paper", font_scale=1.5, rc={"lines.linewidth": 2.5})
+
+
+# Rebalancing fraction
+g = sns.FacetGrid(
+    polfuncs[polfuncs.control == "d"],
+    col="n",
+    hue="model",
+    height=3,
+    aspect=(7 / 3) * 1 / 3,
+)
+g.map(sns.lineplot, "m", "value", alpha=0.7)
+g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
+g.set_axis_labels("$m$", "Rebalancing Flow: $d$")
+make(g, "inf_dFunc")
+
+# After rebalancing, m and n turn to their "tilde" versions. Create ntilde
+# just for seaborn's grid labels.
+polfuncs["$\\tilde{n}$"] = polfuncs["n"]
+polfuncs["$\\Contr$"] = polfuncs["Share"]
+
+# Share fraction
+g = sns.FacetGrid(
+    polfuncs[polfuncs.control == "Share"],
+    col="$\\tilde{n}$",
+    hue="model",
+    height=3,
+    aspect=(7 / 3) * 1 / 3,
+)
+g.map(sns.lineplot, "m", "value", alpha=0.7)
+g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
+g.set_axis_labels("$\\tilde{m}$", r"Deduction Share: $\Contr$")
+
+make(g, "inf_ShareFunc")
+
+# Consumption fraction
+g = sns.FacetGrid(
+    polfuncs[polfuncs.control == "c"],
+    col="$\\tilde{n}$",
+    row="$\\Contr$",
+    hue="model",
+    height=3,
+    aspect=(7 / 3) * 1 / 3,
+)
+g.map(sns.lineplot, "m", "value", alpha=0.7)
+g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
+g.set_axis_labels("$\\tilde{m}$", "Consumption: $c$")
+
+make(g, "inf_cFunc")
