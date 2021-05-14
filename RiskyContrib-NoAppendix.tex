@@ -57,6 +57,25 @@ This paper contains the highlights from the REMARK file in Code>Python folder.
 \hypertarget{Introduction}{}
 \section{Introduction}
 
+This paper develops a two-asset consumption-savings model and serves as
+the documentation of an open-source implementation of its
+solution and simulation methods in the \href{https://econ-ark.org/toolkit}{HARK}
+toolkit \citep{carroll2018HARK}. The model represents an agent who can
+save using two different assets---one risky and the other risk-free---to insure
+against fluctuations in his income, but faces frictions to transferring funds between
+assets. The flexibility of its implementation and its inclusion in the HARK
+toolkit allows users to adapt the model to realistic life-cycle calibrations, and
+also to embedded it in heterogeneous-agents macroeconomic models.
+
+\textbf{Macro applications}
+The last decade of research in macroeconomics has experienced and increased
+interest in how households allocate their savings to assets with different
+risk exposures and liquidity. Heterogeneous asset allocations have been shown
+to be determinant to the effects of fiscal and monetary policy
+\citep{Kaplan2014ecta,Luetticke2021aej_macro}.
+
+\textbf{Micro applications}
+
 \hypertarget{The-base-model}{}
 \section{The base model}
 
@@ -354,8 +373,18 @@ assets.
 \input{\EqDir/bellman_reb}
 \end{equation*}
 
-\hypertarget{Calibration}{}
-\section{Calibration\textemdash Summary}
+\hypertarget{Solutions}{}
+\section{Solutions}
+
+\subsection{Infinite-horizon}
+
+\input{\econtexRoot/Figures/inf_dFunc}
+\input{\econtexRoot/Figures/inf_ShareFunc}
+\input{\econtexRoot/Figures/inf_cFunc}
+
+\subsection{Life-Cycle finite horizon}
+
+\input{\econtexRoot/Figures/LC_age_profiles}
 
 \hypertarget{Conclusion}{}
 \section{Conclusion}
@@ -368,6 +397,6 @@ assets.
 
 \clearpage\vfill\eject
 
-\onlyinsubfile{\bibliography{\econtexRoot/CGMPortfolio-Add}}
+\onlyinsubfile{\bibliography{\econtexRoot/RiskyContrib-Add}}
 
 \end{document}
