@@ -4,6 +4,7 @@ Example implementations of HARK.ConsumptionSaving.ConsPortfolioModel
 """
 from HARK.ConsumptionSaving.ConsRiskyAssetModel import (
     RiskyContribConsumerType,
+    rebalance_assets,
     init_risky_contrib,
 )
 from time import time
@@ -144,3 +145,39 @@ g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
 g.set_axis_labels("$\\tilde{m}$", "Consumption: $c$")
 
 make(g, "inf_cFunc")
+
+# %% Rebalancing viz
+
+# Create a grid of (m,n)
+max_assets = 50
+npoints = 6
+m_tiled, n_tiled = np.meshgrid(np.linspace(0, max_assets, npoints),
+                               np.linspace(0, max_assets, npoints))
+
+import matplotlib.pyplot as plt
+
+
+for i in range(len(agents)):
+    
+    name = list(agents.keys())[i]
+    
+    d = agents[name].solution[0].stageSols["Reb"].DFuncAdj(m_tiled, n_tiled)
+    
+    mTil_tiled, nTil_tiled = rebalance_assets(d, m_tiled, n_tiled,
+                                              agents[name].tau)
+    
+    plt.figure()
+    plt.quiver(m_tiled, n_tiled,
+                  mTil_tiled - m_tiled, nTil_tiled - n_tiled,
+                  units='xy', angles = "xy", scale = 1, linewidths = 2)
+    
+    plt.plot(m_tiled, n_tiled, '.k')
+    plt.plot(mTil_tiled, nTil_tiled, 'xr')
+    
+    plt.xlim(-1, max_assets + 1)
+    plt.ylim(-1, max_assets + 1)
+    plt.title('Rebalancing in the ' + name + ' model')
+    plt.xlabel('Risk-free assets $m$ and $\\tilde{m}$')
+    plt.ylabel('Risky assets $n$ and $\\tilde{n}$')
+
+    make(g, "inf_rebalance_"+name)
