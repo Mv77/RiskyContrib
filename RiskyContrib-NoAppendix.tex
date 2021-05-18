@@ -208,9 +208,9 @@ normalized problems
 \input{\EqDir/bellman_NAdj_norm}
 \end{equation}
 and
-\begin{equation*}
+\begin{equation}\label{eq:bellman_Adj_norm}
 \input{\EqDir/bellman_Adj_norm}
-\end{equation*}
+\end{equation}
 It can be shown that
 \begin{equation*}
 V_{t}^{\Adj}(M_t,N_t,P_t) = P_t^{1-\rho} v_{t}^{\Adj}(m_t,n_t), \quad
@@ -280,44 +280,94 @@ pick his consumption in the next stage. His problem is
 
 The first decision that an agent takes, if allowed, is how to reallocate his
 assets. At this stage, his value function is
-\begin{equation*}
+\begin{equation}\label{eq:bellman_reb}
 \input{\EqDir/bellman_reb}
+\end{equation}
+
+The solution to this stage problem will be the policy function $d_t(\cdot, \cdot)$
+that gives the optimal flow from risk-free to risky assets, which can be negative.
+However, it is convenient to define a normalized policy function $\dFrac_t$ as
+\begin{equation*}
+\dFrac_t(m, n) = \begin{cases}
+d_t(m,n)/m, & \text{ if } d_t(m,n) \geq 0 \\
+d_t(m,n)/n, & \text{ if } d_t(m,n) < 0
+\end{cases}
 \end{equation*}
+so that $-1 \leq \dFrac(m,n) \leq 1$ for all $(m,n)$.
 
 \hypertarget{Examples}{}
 \section{Examples of Solutions and Simulations}
 
+This section examines various instances of the model under
+different specifications for lives' lengths and financial
+frictions. The main purpose of these exercises is to illustrate
+the model's capabilities and the implications of financial
+frictions for asset allocations.
+
 \subsection{Infinite-horizon}
 
-\begin{table}
-\begin{center}
-\caption{Infinite Horizon Example Calibration}\label{tab:inf_calibration}
-\begin{tabular}{ccc}
-\toprule
-Name in HARK & Mathematical Symbol & Value \\
-\midrule
-\texttt{CRRA} & $\rho$ & $5.0$ \\
-\texttt{Rfree} & $R$& $1.03$ \\
-\texttt{DiscFac} & $\beta$ & $0.9$ \\
-\texttt{LivPrb} & $\delta$ &  $0.98$ \\
-\texttt{PermGroFac} & $\Gamma$ &  $1.01$ \\
-\texttt{PermShkStd} & $\sigma_\psi$ &  $0.1$ \\
-\texttt{TranShkStd} & $\sigma_\theta$ &  $0.1$ \\
-\texttt{UnempPrb} & $\mho$ &  $0.05$ \\
-\texttt{IncUnemp} & $\mathcal{U}$ &  $0.3$ \\
-\texttt{RiskyAvg} & $E[\tilde{R}]$ &  $1.08$ \\
-\texttt{RiskyStd} & $\sqrt{V[\tilde{R}]}$ &  $0.18$ \\
-\texttt{AdjustPrb} & $p$ &  Varying \\
-\texttt{tau} & $\tau$ & Varying \\
-\bottomrule
-\end{tabular}
-\end{center}
-\end{table}
+For a first exercise, consider the infinite-horizon version of
+the model. In this version, parameters are constant and the
+optimization problem that the agent solves every period
+is---up to the values of state variables---the same. I set
+the parameters to the values reported in Table \ref{tab:inf_calibration}.
+
+\input{\TabDir/inf_calibration}
+
+The infinite-horizon solution is obtained by value-function iteration
+backwards in time. I define trivial starting value functions $v^{\Adj}_T(\cdot)$
+and $v^{\NAdj}_T(\cdot)$ and use Equations \ref{eq:bellman_Adj_norm} and
+\ref{eq:bellman_NAdj_norm} to find $v^{\Adj}_{T-1}(\cdot)$ and $v^{\NAdj}_{T-1}(\cdot)$.
+I repeat this process until the value functions obtained in successive
+iterations are similar enough.
+
+To illustrate the effect of the different financial frictions in the
+model, I present solutions for three different parametrizations.
+\begin{itemize}
+\item \textbf{Base}: a version without financial frictions. The probability
+of being able to rebalance is $p = 1$ and the risky withdrawal is $\tau = 0$.
+\item \textbf{Tax}: a version with a risky withdrawal tax of $10\%$ ($\tau = 0.1$).
+The probability of being able to rebalance is $p = 1$.
+\item \textbf{Calvo}: a version with a stochastic inability to rebalance that
+occurs with a $75\%$ chance ($p = 0.25$). The risky withdrawal is $\tau = 0$.
+\end{itemize}
 
 \input{\econtexRoot/Figures/inf_dFunc}
+
+The first stage of an agent's period (if he is allowed to rebalance) is to
+solve the asset-rebalancing problem (Equation \ref{eq:bellman_reb}). The solution
+to this problem is the rebalancing fraction function $\dFrac(m,n)$, which I present
+in Figure \ref{fig:inf_dFunc} for the different parametrizations and various
+combinations of $(m,n)$. The figure shows how individual with low risk-free resources
+withdraw funds from their risky accounts in order to finance their consumption.
+The version of the model with the withdrawal tax has regions where $\dFrac = 0$ as
+a result of the tax's asymmetry. As illustrated by the figure, the stochastic
+inability to rebalance pushes agents to keep less funds in the risky asset, withdrawing
+them at higher rates when they get the chance.
+
 \input{\econtexRoot/Figures/inf_ShareFunc}
+
+The second stage in a period, which an agent also participates in only if
+he $\Adj_t = 1$, consists of choosing the income contribution share $\Contr$.
+Figure \ref{fig:inf_ShareFunc} presents the policy function $\Contr(\tilde{m},\tilde{n})$
+for various $(\tilde{m},\tilde{n})$ combinations. The income deduction scheme
+becomes irrelevant in the ``Base'' and ``Tax'' versions of the model, since
+agents are always able to rebalance their assets ($p=1$) and thus pre-committing
+funds yields no gains. The figure shows that when $p<1$ agents will
+make use of the system, especially if the agent has low risky asset balances.
+
 \input{\econtexRoot/Figures/inf_cFunc}
 
+The final stage in the agent's problem, or the only one if $\Adj_t=0$, is
+to choose how much of his risk-free resources to consume. Figure \ref{fig:inf_cFunc}
+presents the consumption functions for different combinations of post-rebalancing
+assets $(\tilde{m}, \tilde{n})$ and income contribution fractions $\Contr$. Consumption
+is increasing in both assets as would be expected, and financial frictions reduce the
+level of consumption at any given state. A first characteristic to note is that
+the contribution share has no effect on the consumption functions of the ``Base'' model
+and little effect in that of the ``Tax'' model. Since these agents know they will be
+able to rebalance their assets, the only relevance of where their income is initially
+deposited comes from potentially paying the rebalancing tax. 
 
 \input{\econtexRoot/Figures/inf_rebalance_Base}
 \input{\econtexRoot/Figures/inf_rebalance_Tax}

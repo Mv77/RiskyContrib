@@ -100,16 +100,17 @@ sns.set_context("paper", font_scale=1.5, rc={"lines.linewidth": 2.5})
 
 
 # Rebalancing fraction
+polfuncs["$n$"] = polfuncs["n"]
 g = sns.FacetGrid(
     polfuncs[polfuncs.control == "d"],
-    col="n",
+    col="$n$",
     hue="model",
     height=3,
     aspect=(7 / 3) * 1 / 3,
 )
 g.map(sns.lineplot, "m", "value", alpha=0.7)
 g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
-g.set_axis_labels("$m$", "Rebalancing Flow: $d$")
+g.set_axis_labels("$m$", "Rebalancing fraction: $\dFrac$")
 make(g, "inf_dFunc")
 
 # After rebalancing, m and n turn to their "tilde" versions. Create ntilde
