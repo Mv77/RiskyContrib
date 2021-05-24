@@ -33,7 +33,8 @@ par_LC_base["vFuncBool"] = False
 
 # Temporarily make grids sparser
 par_LC_base.update(
-    {"aXtraCount": 30, "mNrmCount": 30, "nNrmCount": 30,}
+    {"aXtraCount": 30, "mNrmCount": 30, "nNrmCount": 30,
+     "mNrmMax": 500, "nNrmMax":500}
 )
 
 # %% A version with the tax
@@ -44,13 +45,23 @@ par_LC_tax["tau"] = 0.1
 par_LC_calvo = copy(par_LC_base)
 par_LC_calvo["AdjustPrb"] = 0.25
 
+# %% A calibration with a probability and tax that change at retirement
+par_LC_retirement = copy(par_LC_base)
+par_LC_retirement["AdjustPrb"] = [1.0] + [0.0]*39 + [1.0]*25
+par_LC_retirement["tau"] = [0.0]*41 + [0.0]*24
+par_LC_retirement["UnempPrb"] = 0.0
 # %% Create and solve agents with all the parametrizations
 
 agents = {
     "Base": RiskyContribConsumerType(**par_LC_base),
     "Tax": RiskyContribConsumerType(**par_LC_tax),
     "Calvo": RiskyContribConsumerType(**par_LC_calvo),
+    "Retirement": RiskyContribConsumerType(**par_LC_retirement),
 }
+
+#agents = {
+#    "Retirement": RiskyContribConsumerType(**par_LC_retirement)
+#}
 
 for agent in agents:
 
@@ -121,7 +132,7 @@ lc_means = pd.melt(simdata,
                                  'Consumption  $C$',
                                  'Risky Share of Savings','Deduct. Share $\\Contr$'])
 
-lc_means['Age'] = lc_means['t_age']
+lc_means['Age'] = lc_means['t_age'] + 24
 
 # Drop the last year, as people's behavior is substantially different.
 lc_means = lc_means[lc_means['Age']<max(lc_means['Age'])]
@@ -140,7 +151,7 @@ g = sns.FacetGrid(
     sharey=False
 )
 g.map(sns.lineplot, "Age", "value", alpha=0.7)
-g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
+g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=4, title="")
 g.set_axis_labels("Age", "")
 g.set_titles(col_template = '{col_name}')
 make(g, "LC_age_profiles")
