@@ -400,7 +400,49 @@ the horizontal axis.
 
 \subsection{Life-Cycle finite horizon}
 
+The finite-horizon version of the model represents agents that live for up to
+a maximum finite number of periods and might face different parametrizations
+of their problem (taxes, income patterns, etc) in each period. This version is
+well-suited for representing microeconomic life-cycle problems of savings and
+portfolio decisions, and for using its agents in overlapping-generations macroeconomic
+models. This section presents life-cycle simulations of the model under different
+parametrizations for financial frictions, showing the effect that they produce
+on wealth accumulation and portfolio choice.
+
+I maintain the preferences ($\rho$, $\beta$) and financial-asset properties
+($R$, $E[\tilde{R}]$, $V[\tilde{R}]$) from Table \ref{tab:inf_calibration}.
+Survival probabilities $\delta$, and income's growth factor and volatilities
+($\Gamma$, $\sigma_{\psi}$, $\sigma_{\theta}$) are now time-varying and
+calibrated to represent  individuals who enter the model at age 25,
+retire exogenously at 65, and live to a maximum age of 90. Survival
+probabilities come from the 2004 SSA life-tables for males. Income's growth
+factors and volatilities come from the calibration for high-school graduates
+in \cite{Cagetti2003jbes}. The parametrizations of the model differ in their
+assumptions about financial frictions. I present the following four configurations:
+\begin{itemize}
+\item \textbf{Base}: the probability of being able to rebalance is $p = 1$
+and the risky withdrawal is $\tau = 0$, both constant throughout the agents' lives.
+\item \textbf{Tax}: the risky withdrawal tax is constant at $10\%$ and the agents
+can always rebalance their portfolios.
+\item \textbf{Calvo}: there is no risky withdrawal tax, but there is only a $25\%$
+that agents can rebalance their portfolios every year.
+\item \textbf{Retirement}: there is no risky withdrawal tax, but the agents' ability
+to rebalance their portfolio is time-varying; they can rebalance their assets and pick
+their income-deduction scheme for certain when they enter the model at age 25, but
+then they have no chance of doing so again ($p=0$) until they retire. After retirement
+at age 65, they can always rebalance their portfolio ($p=1$).
+\end{itemize}
+
 \input{\econtexRoot/Figures/LC_age_profiles}
+
+
+I simulate populations of $50$ agents for $5,000$ periods with each of the
+parametrizations. Each time an agent dies, he is replaced by a new 25-year-old.
+I calculate age profiles of various variables of interest by finding their
+averages across all the simulated observations of every given age. Figure 
+\ref{fig:LC_age_profiles} presents the age profiles of permanent income,
+asset balances, the risky share of savings, and the income deduction share
+for all parametrizations.
 
 \hypertarget{Conclusion}{}
 \section{Conclusion}
