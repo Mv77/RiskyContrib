@@ -367,11 +367,36 @@ level of consumption at any given state. A first characteristic to note is that
 the contribution share has no effect on the consumption functions of the ``Base'' model
 and little effect in that of the ``Tax'' model. Since these agents know they will be
 able to rebalance their assets, the only relevance of where their income is initially
-deposited comes from potentially paying the rebalancing tax. 
+deposited comes from potentially paying the rebalancing tax. A second notable aspect is
+the interaction of financial frictions and saving choices. The figure shows that each
+of the frictions produces leftward shifts in the points at which the consumer switches
+from consuming all of his liquid resources ($c = \tilde{m}$) to saving ($c < \tilde{m}$).
+
 
 \input{\econtexRoot/Figures/inf_rebalance_Base}
 \input{\econtexRoot/Figures/inf_rebalance_Tax}
 \input{\econtexRoot/Figures/inf_rebalance_Calvo}
+
+Figures \ref{fig:inf_rebalance_Base}, \ref{fig:inf_rebalance_Tax} and
+\ref{fig:inf_rebalance_Calvo} give a visual representation of the agents'
+reallocation decisions and the effect that financial frictions have on them.
+For various starting asset allocations $(m,n)$ represented with black dots,
+each of the plots displays the optimal post-rebalancing allocation
+$(\tilde{m},\tilde{n})$  with a red cross, joining initial and final positions
+with arrows. Figure \ref{fig:inf_rebalance_Base} shows that in the frictionless
+``Base'' model every initial point in a $m+n=x$ maps to the same post-rebalancing
+portfolio, and that these portfolios lean towards risk-free assets as total wealth
+increases (they start above the $45$-degree line but move below it as $m+n$ increases).
+Figure \ref{fig:inf_rebalance_Tax} introduces the rebalancing tax, which creates
+a region in which the agent does not rebalance his portfolio. This zone of
+inaction is a different representation of the flat regions of the $\dFrac(\cdot)$
+function in Figure \ref{fig:inf_dFunc}. The tax also rotates the south-east pointing
+arrows, as a unit of $n$ now transforms into less than a unit of $m$. Finally,
+Figure \ref{fig:inf_rebalance_Calvo} removes the tax and introduces the stochastic
+inability to rebalance, which closes the inaction zone but makes the risky asset
+less desirable, resulting in an optimal portfolio trajectory that is closer to
+the horizontal axis.
+
 
 \subsection{Life-Cycle finite horizon}
 

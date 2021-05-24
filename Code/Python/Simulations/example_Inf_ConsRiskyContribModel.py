@@ -167,7 +167,7 @@ for i in range(len(agents)):
     mTil_tiled, nTil_tiled = rebalance_assets(d, m_tiled, n_tiled,
                                               agents[name].tau)
     
-    plt.figure()
+    g = plt.figure()
     plt.quiver(m_tiled, n_tiled,
                   mTil_tiled - m_tiled, nTil_tiled - n_tiled,
                   units='xy', angles = "xy", scale = 1, linewidths = 2)
