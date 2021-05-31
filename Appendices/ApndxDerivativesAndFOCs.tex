@@ -1,0 +1,82 @@
+\input{./econtexRoot}\documentclass[../RiskyContrib.tex]{subfiles}
+\input{\econtexRoot/\ApndxDir/onlyinsubfile.tex}\begin{document}
+
+\section{First order conditions and value-function derivatives}
+
+The computational solution of the model uses the stage-problems'
+first-order conditions extensively. This appendix writes the
+first-order conditions and the value-function derivatives that
+appear in them explicitly.
+
+\subsubsection{Consumption stage, $\Cns$}
+
+The first order condition for an interior solution ($c < \tilde{m}$)
+of the consumption stage problem (Equation \ref{eq:bellman_cns}) is
+\begin{equation*}
+\begin{split}
+u'(c_t) = p_{t+1} &\beta R \delta_{t+1} E_t \left[ \tilde{\Gamma}_{t+1}^{-\rho} \pd{v^{\Reb}_{t+1}}{\tilde{m}_{t+1}}\right] +\\
+\left(1-p_{t+1}\right) &\beta R \delta_{t+1} E_t\left[\tilde{\Gamma}_{t+1}^{-\rho} \pd{v^{\Cns}_{t+1}}{\tilde{m}_{t+1}} \right]
+\end{split}
+\end{equation*}
+
+The derivatives of the stage value function are
+\begin{equation}
+\begin{split}
+\pd{v^{\Cns}_{t}\left(m_{t}, 
+n_{t}, \Contr_{t+1}\right)}{\tilde{m}_t} = u'(c_t)
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pd{v^{\Cns}_{t}\left(m_{t}, 
+n_{t}, \Contr_{t+1}\right)}{\tilde{n}_t} = p_{t+1} &\beta \delta_{t+1} E_t \left[ \tilde{R}_{t+1}\tilde{\Gamma}_{t+1}^{-\rho} \pd{v^{\Reb}_{t+1}}{\tilde{m}_{t+1}}\right] +\\
+\left(1-p_{t+1}\right) &\beta \delta_{t+1} E_t\left[\tilde{R}_{t+1} \tilde{\Gamma}_{t+1}^{-\rho} \pd{v^{\Cns}_{t+1}}{\tilde{m}_{t+1}} \right]
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pd{v^{\Cns}_{t+1}\left(m_{t}, 
+n_{t}, \Contr_{t+1}\right)}{\Contr_{t+1}} = p_{t+1} &\beta \delta_{t+1} E_t \left[\tilde{\Gamma}_{t+1}^{1-\rho} \theta_{t+1} \left(\pd{v^{\Reb}_{t+1}}{\tilde{n}_{t+1}} - \pd{v^{\Reb}_{t+1}}{\tilde{m}_{t+1}}\right)\right] +\\
+\left(1-p_{t+1}\right) &\beta \delta_{t+1} E_t\left[\tilde{\Gamma}_{t+1}^{1-\rho} \theta_{t+1} \left( \pd{v^{\Cns}_{t+1}}{\tilde{n}_{t+1}} - \pd{v^{\Cns}_{t+1}}{\tilde{m}_{t+1}} \right) + \tilde{\Gamma}_{t+1}^{1-\rho} \pd{v^{\Cns}_{t+1}}{\Contr_{t+2}}\right]
+\end{split}
+\end{equation}
+
+\subsubsection{Income contribution share stage, $\Sha$}
+
+The first order condition for an interior solution ($\Contr\in(0,1)$) of the
+income contribution share stage (Equation \ref{eq:bellman_sha}) is
+\begin{equation}
+0 = \pd{v_t^{\Cns}}{\Contr_{t+1}},
+\end{equation}
+and the derivatives of the stage value function are
+\begin{equation*}
+\pd{v^{\Sha}_t(\tilde{m}_t, \tilde{n}_t)}{\tilde{m}_t} = \pd{v^{\Cns}_t}{\tilde{m}_t},
+\qquad
+\pd{v^{\Sha}_t(\tilde{m}_t, \tilde{n}_t)}{\tilde{n}_t} = \pd{v^{\Cns}_t}{\tilde{n}_t}
+\end{equation*}
+
+
+\subsubsection{Rebalancing stage, $\Reb$}
+
+The first order condition for a solution of the type
+$d\in\left[\left(-n,0\right)\cup\left(0,m\right)\right]$the rebalancing stage
+problem (Equation \ref{eq:bellman_reb}) is
+\begin{equation}
+\left(1-1_{[d_t\leq0]}\tau\right)\pd{v_t^{\Sha}}{\tilde{m}} = \pd{v_t^{\Sha}}{\tilde{n}},
+\end{equation}
+and a necessary condition for a solution of the type $d=0$ is
+\begin{equation}
+\left(1-\tau\right)\pd{v_t^{\Sha}}{\tilde{m}} \leq \pd{v_t^{\Sha}}{\tilde{n}} \leq \pd{v_t^{\Sha}}{\tilde{m}}
+\end{equation}
+
+The derivatives of the stage value function are
+\begin{equation}
+\pd{v_t^{\Reb}(m_t,n_t)}{m_t} = \max \left\{ \pd{v_t^{\Sha}}{\tilde{m}}, \pd{v_t^{\Sha}}{\tilde{n}}  \right\}
+\end{equation}
+\begin{equation}
+\pd{v_t^{\Reb}(m_t,n_t)}{n_t} = \max \left\{ (1-\tau) \pd{v_t^{\Sha}}{\tilde{m}}, \pd{v_t^{\Sha}}{\tilde{n}}  \right\}
+\end{equation}
+
+\end{document}
