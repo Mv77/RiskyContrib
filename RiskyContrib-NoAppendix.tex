@@ -12,12 +12,11 @@ A Two-Asset Savings Model with an Income-Contribution Scheme\\
 REMARK
 \end{verbatimwrite}
 
-\title{A Two-Asset Savings Model with an Income-Contribution Scheme\\
-REMARK}
+\title{A Two-Asset Savings Model with an Income-Contribution Scheme}
 
 \author{Mateo Vel\'asquez-Giraldo}
 
-\keywords{Lifecycle, Portfolio Choice, Social Security, Replication}
+\keywords{Lifecycle, Portfolio Choice, Social Security, Open Source}
 
 \maketitle 
 
@@ -58,23 +57,14 @@ This paper contains the highlights from the REMARK file in Code>Python folder.
 \section{Introduction}
 
 This paper develops a two-asset consumption-savings model and serves as
-the documentation of an open-source implementation of its
-solution and simulation methods in the \href{https://econ-ark.org/toolkit}{HARK}
+the documentation of an open-source implementation of methods to solve and
+simulate it in the \href{https://econ-ark.org/toolkit}{HARK}
 toolkit \citep{carroll2018HARK}. The model represents an agent who can
 save using two different assets---one risky and the other risk-free---to insure
 against fluctuations in his income, but faces frictions to transferring funds between
 assets. The flexibility of its implementation and its inclusion in the HARK
-toolkit allows users to adapt the model to realistic life-cycle calibrations, and
+toolkit will allow users to adapt the model to realistic life-cycle calibrations, and
 also to embedded it in heterogeneous-agents macroeconomic models.
-
-\textbf{Macro applications}
-The last decade of research in macroeconomics has experienced and increased
-interest in how households allocate their savings to assets with different
-risk exposures and liquidity. Heterogeneous asset allocations have been shown
-to be determinant to the effects of fiscal and monetary policy
-\citep{Kaplan2014ecta,Luetticke2021aej_macro}.
-
-\textbf{Micro applications}
 
 \hypertarget{The model}{}
 \section{The model}
@@ -189,7 +179,7 @@ optimizing decisions that occur within a period of the life cycle model.
 \hypertarget{Recursive}{}
 \section{Recursive representation of the model}\label{sec:recursive}
 
-Individual subscripts are dropped for simplicity. The value function for
+Individual subscripts $i$ are dropped for simplicity. The value function for
 an agent who is not allowed to rebalance his portfolio at time $t$ is
 \begin{equation*}
     \input{\EqDir/bellman_NAdj}
@@ -263,18 +253,18 @@ v_t^{\Adj}(m_t, n_t) = v_t^{\Reb}(m_t, n_t), \quad v_t^{\NAdj}(m_t, n_t, \Contr_
 with the first fact being true because we have assumed that asset rebalancing
 is the first decision that an adjusting agent takes, and he assumes that his
 subsequent decisions will be optimal. Therefore, the consumption stage problem is
-\begin{equation*}
+\begin{equation}\label{eq:bellman_cns}
 \input{\EqDir/bellman_cns}
-\end{equation*}
+\end{equation}
 
 \subsubsection{Income contribution share stage, $\Sha$}
 
 An agent with the option to set his income contribution share will do so
 taking his asset allocation as given and assuming that he will optimally
 pick his consumption in the next stage. His problem is
-\begin{equation*}
+\begin{equation}\label{eq:bellman_sha}
 \input{\EqDir/bellman_sha}
-\end{equation*}
+\end{equation}
 
 \subsubsection{Rebalancing stage, $\Reb$}
 
@@ -325,7 +315,7 @@ To illustrate the effect of the different financial frictions in the
 model, I present solutions for three different parametrizations.
 \begin{itemize}
 \item \textbf{Base}: a version without financial frictions. The probability
-of being able to rebalance is $p = 1$ and the risky withdrawal is $\tau = 0$.
+of being able to rebalance is $p = 1$ and the risky withdrawal tax rate is $\tau = 0$.
 \item \textbf{Tax}: a version with a risky withdrawal tax of $10\%$ ($\tau = 0.1$).
 The probability of being able to rebalance is $p = 1$.
 \item \textbf{Calvo}: a version with a stochastic inability to rebalance that
@@ -338,22 +328,23 @@ The first stage of an agent's period (if he is allowed to rebalance) is to
 solve the asset-rebalancing problem (Equation \ref{eq:bellman_reb}). The solution
 to this problem is the rebalancing fraction function $\dFrac(m,n)$, which I present
 in Figure \ref{fig:inf_dFunc} for the different parametrizations and various
-combinations of $(m,n)$. The figure shows how individual with low risk-free resources
+combinations of $(m,n)$. The figure shows how individuals with low risk-free resources
 withdraw funds from their risky accounts in order to finance their consumption.
 The version of the model with the withdrawal tax has regions where $\dFrac = 0$ as
-a result of the tax's asymmetry. As illustrated by the figure, the stochastic
-inability to rebalance pushes agents to keep less funds in the risky asset, withdrawing
-them at higher rates when they get the chance.
+a result of the tax's asymmetry---these are regions where the marginal utility of the
+risk-free asset lies between the pre-tax and post-tax marginal utility of risky assets.
+Finally, as illustrated by the figure, the stochastic inability to rebalance pushes agents to
+keep less funds in the risky asset, withdrawing them at higher rates when they get the chance.
 
 \input{\econtexRoot/Figures/inf_ShareFunc}
 
 The second stage in a period, which an agent also participates in only if
-he $\Adj_t = 1$, consists of choosing the income contribution share $\Contr$.
+he draws $\Adj_t = 1$, consists of choosing the income contribution share $\Contr$.
 Figure \ref{fig:inf_ShareFunc} presents the policy function $\Contr(\tilde{m},\tilde{n})$
 for various $(\tilde{m},\tilde{n})$ combinations. The income deduction scheme
 becomes irrelevant in the ``Base'' and ``Tax'' versions of the model, since
 agents are always able to rebalance their assets ($p=1$) and thus pre-committing
-funds yields no gains. The figure shows that when $p<1$ agents will
+funds has o benefits. The figure shows that when $p<1$ agents will
 make use of the system, especially if the agent has low risky asset balances.
 
 \input{\econtexRoot/Figures/inf_cFunc}
@@ -362,10 +353,10 @@ The final stage in the agent's problem, or the only one if $\Adj_t=0$, is
 to choose how much of his risk-free resources to consume. Figure \ref{fig:inf_cFunc}
 presents the consumption functions for different combinations of post-rebalancing
 assets $(\tilde{m}, \tilde{n})$ and income contribution fractions $\Contr$. Consumption
-is increasing in both assets as would be expected, and financial frictions reduce the
+is increasing in both assets and financial frictions reduce the
 level of consumption at any given state. A first characteristic to note is that
 the contribution share has no effect on the consumption functions of the ``Base'' model
-and little effect in that of the ``Tax'' model. Since these agents know they will be
+and little effect in those of the ``Tax'' model. Since these agents know they will be
 able to rebalance their assets, the only relevance of where their income is initially
 deposited comes from potentially paying the rebalancing tax. A second notable aspect is
 the interaction of financial frictions and saving choices. The figure shows that each
@@ -384,7 +375,7 @@ For various starting asset allocations $(m,n)$ represented with black dots,
 each of the plots displays the optimal post-rebalancing allocation
 $(\tilde{m},\tilde{n})$  with a red cross, joining initial and final positions
 with arrows. Figure \ref{fig:inf_rebalance_Base} shows that in the frictionless
-``Base'' model every initial point in a $m+n=x$ maps to the same post-rebalancing
+``Base'' model every initial point in a $m+n=x$ line maps to the same post-rebalancing
 portfolio, and that these portfolios lean towards risk-free assets as total wealth
 increases (they start above the $45$-degree line but move below it as $m+n$ increases).
 Figure \ref{fig:inf_rebalance_Tax} introduces the rebalancing tax, which creates
@@ -415,16 +406,16 @@ Survival probabilities $\delta$, and income's growth factor and volatilities
 ($\Gamma$, $\sigma_{\psi}$, $\sigma_{\theta}$) are now time-varying and
 calibrated to represent  individuals who enter the model at age 25,
 retire exogenously at 65, and live to a maximum age of 90. Survival
-probabilities come from the 2004 SSA life-tables for males. Income's growth
+probabilities come from the 2004 SSA life-tables for males. Income growth
 factors and volatilities come from the calibration for high-school graduates
 in \cite{Cagetti2003jbes}. The parametrizations of the model differ in their
 assumptions about financial frictions. I present the following four configurations:
 \begin{itemize}
 \item \textbf{Base}: the probability of being able to rebalance is $p = 1$
-and the risky withdrawal is $\tau = 0$, both constant throughout the agents' lives.
+and the risky withdrawal tax rate is $\tau = 0$, both constant throughout the agents' lives.
 \item \textbf{Tax}: the risky withdrawal tax is constant at $10\%$ and the agents
 can always rebalance their portfolios.
-\item \textbf{Calvo}: there is no risky withdrawal tax, but there is only a $25\%$
+\item \textbf{Calvo}: there is no risky withdrawal tax, but there is only a $25\%$ chance
 that agents can rebalance their portfolios every year.
 \item \textbf{Retirement}: there is no risky withdrawal tax, but the agents' ability
 to rebalance their portfolio is time-varying; they can rebalance their assets and pick
@@ -443,6 +434,41 @@ averages across all the simulated observations of every given age. Figure
 \ref{fig:LC_age_profiles} presents the age profiles of permanent income,
 asset balances, the risky share of savings, and the income deduction share
 for all parametrizations.
+
+The age profiles of the ``Base'' and ``Tax'' parametrizations are similar.
+The risky share of savings, which I define as $\tilde{N}/(A + \tilde{M})$,
+follows the same pattern as in \cite{Cocco2005rfs}, starting high and declining
+with age. The main difference between both calibrations is that the tax
+makes agents' risky share lower when they are young (because of an unwillingness
+to pay the tax if they are forced to draw from their scarce wealth) and higher
+after retirement as the tax incentivizes them to withdraw their funds more slowly.
+Since in both calibrations the agent can rebalance his portfolio each period, there
+is no reason to use the income deduction scheme.
+
+Matters change substantially with the stochastic inability to rebalance. As Figure
+\ref{fig:LC_age_profiles} shows, agents under the ``Calvo'' calibration accumulate
+less risky asset balances. In part, this is due to the mechanical effect of a reduced
+chance of being able to shift funds into the risky asset. However, risky assets also
+become less desirable at young ages since they are worse at insuring agents against
+their income fluctuations---they might be barred from accessing their funds precisely
+at a period when they fall unemployed. The uncertain ability to extract funds from the
+risky asset also reduces its appeal as a vehicle for retirement savings, which is
+evidenced in a low income deduction share. As a result of investing less in the risky
+asset, agents in this calibration accumulate less total wealth and can afford only a
+lower level of consumption.
+
+The last calibration, ``Retirement'', shows what happens when the rebalancing friction
+negates the risky asset's use as a buffer for income fluctuations at younger ages but
+maintains its attractiveness as a vehicle for retirement savings. In this calibration,
+agents use the income-deduction scheme to progressively build up their stock of risky
+assets. The average contribution share is high enough that these agents accumulate the
+most risky assets by retirement out of all calibrations. When they retire, as they can
+finally access their risky funds, they afford a higher level of consumption than the
+other types of agent.
+
+These exercises show how the different financial frictions that the model can
+accommodate generate different consumption, savings, and portfolio patterns.
+
 
 \hypertarget{Conclusion}{}
 \section{Conclusion}
