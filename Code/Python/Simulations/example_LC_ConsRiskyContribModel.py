@@ -2,7 +2,7 @@
 """
 Example implementations of HARK.ConsumptionSaving.ConsPortfolioModel
 """
-from HARK.ConsumptionSaving.ConsRiskyAssetModel import (
+from HARK.ConsumptionSaving.ConsRiskyContribModel import (
     RiskyContribConsumerType,
     init_risky_contrib_lifecycle,
 )
@@ -80,7 +80,7 @@ for agent in agents:
     agents[agent].T_sim = t_sim
     agents[agent].track_vars = ['pLvl','t_age','Adjust',
                                 'mNrm','nNrm','mNrmTilde','nNrmTilde','aNrm',
-                                'cNrm', 'Share', 'DNrm']
+                                'cNrm', 'Share', 'dfrac']
     agents[agent].initialize_sim()
     agents[agent].simulate()
     profile = age_profiles(agents[agent])
