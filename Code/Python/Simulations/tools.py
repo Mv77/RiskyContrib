@@ -18,18 +18,18 @@ def pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals):
     
     # Rebalancing
     for a in agents:
-        d = agents[a].solution[t].stageSols['Reb'].DFuncAdj(m_tiled, n_tiled)
+        dfrac = agents[a].solution[t].stage_sols['Reb'].dfracFunc_Adj(m_tiled, n_tiled)
         data = pd.DataFrame({'m': m_tiled.flatten(),
                              'n': n_tiled.flatten(),
-                             'value': d.flatten()})
+                             'value': dfrac.flatten()})
         data['model'] = a
-        data['control'] = 'd'
+        data['control'] = 'dfrac'
         
         dframes.append(data)
     
     # Contrib share
     for a in agents:
-        s = agents[a].solution[t].stageSols['Sha'].ShareFuncAdj(m_tiled, n_tiled)
+        s = agents[a].solution[t].stage_sols['Sha'].ShareFunc_Adj(m_tiled, n_tiled)
         data = pd.DataFrame({'m': m_tiled.flatten(),
                              'n': n_tiled.flatten(),
                              'value': s.flatten()})
@@ -41,7 +41,7 @@ def pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals):
     # Consumption
     m_tiled, n_tiled, Share_tiled = np.meshgrid(mNrmGrid, nNrm_vals, Share_vals)
     for a in agents:
-        c = agents[a].solution[t].stageSols['Cns'].cFunc(m_tiled, n_tiled, Share_tiled)
+        c = agents[a].solution[t].stage_sols['Cns'].cFunc(m_tiled, n_tiled, Share_tiled)
         data = pd.DataFrame({'m': m_tiled.flatten(),
                              'n': n_tiled.flatten(),
                              'Share': Share_tiled.flatten(),

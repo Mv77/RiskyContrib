@@ -2,7 +2,7 @@
 """
 Example implementations of HARK.ConsumptionSaving.ConsPortfolioModel
 """
-from HARK.ConsumptionSaving.ConsRiskyAssetModel import (
+from HARK.ConsumptionSaving.ConsRiskyContribModel import (
     RiskyContribConsumerType,
     rebalance_assets,
     init_risky_contrib,
@@ -102,7 +102,7 @@ sns.set_context("paper", font_scale=1.5, rc={"lines.linewidth": 2.5})
 # Rebalancing fraction
 polfuncs["$n$"] = polfuncs["n"]
 g = sns.FacetGrid(
-    polfuncs[polfuncs.control == "d"],
+    polfuncs[polfuncs.control == "dfrac"],
     col="$n$",
     hue="model",
     height=3,
