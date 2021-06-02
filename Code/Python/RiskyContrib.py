@@ -7,8 +7,8 @@
 #     text_representation:
 #       extension: .py
 #       format_name: percent
-#       format_version: '1.2'
-#       jupytext_version: 1.2.4
+#       format_version: '1.3'
+#       jupytext_version: 1.11.2
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -22,12 +22,12 @@
 #     name: python
 #     nbconvert_exporter: python
 #     pygments_lexer: ipython3
-#     version: 3.7.9
+#     version: 3.8.8
 #   latex_envs:
 #     LaTeX_envs_menu_present: true
 #     autoclose: false
-#     autocomplete: true
-#     bibliofile: biblio.bib
+#     autocomplete: false
+#     bibliofile: RiskyContrib-Add.bib
 #     cite_by: apalike
 #     current_citInitial: 1
 #     eqLabelWithNumbers: true
@@ -47,14 +47,14 @@
 # ## Mateo Velásquez-Giraldo
 #
 # This notebook demonstrates the use of the `RiskyContrib` agent type
-# of the [Hark Toolkit](https://econ-ark.org/toolkit). The model represents an agent who can
+# of the [HARK Toolkit](https://econ-ark.org/toolkit). The model represents an agent who can
 # save using two different assets---one risky and the other risk-free---to insure
 # against fluctuations in his income, but faces frictions to transferring funds between
 # assets. The flexibility of its implementation and its inclusion in the HARK
 # toolkit will allow users to adapt the model to realistic life-cycle calibrations, and
 # also to embedded it in heterogeneous-agents macroeconomic models.
 
-# %%
+# %% code_folding=[]
 # Preamble
 
 from HARK.ConsumptionSaving.ConsRiskyContribModel import (
@@ -89,7 +89,7 @@ def in_ipynb():
 # Determine whether to make the figures inline (for spyder or jupyter)
 # vs whatever is the automatic setting that will apply if run from the terminal
 if in_ipynb():
-    # %matplotlib inline generates a syntax error when run from the shell
+    # # %matplotlib inline generates a syntax error when run from the shell
     # so do this instead
     get_ipython().run_line_magic('matplotlib', 'inline')
 else:
@@ -150,8 +150,7 @@ else:
 # retirement. Introduced by \cite{Carroll1997qje}, this income specification is common in studies
 # of life-cycle wealth accumulation and portfolio choice; see e.g.,
 # \cite{Cagetti2003jbes,Cocco2005rfs,Fagereng2017jof}. The specification has
-# also been used in studies of income volatility, which have yielded calibrations of its stochastic
-# shocks' distributions \citep[see e.g.,][]{Carroll1992bpea,Carroll1997jme,Sabelhaus2010jme}
+# also been used in studies of income volatility such as \cite{Carroll1992bpea,Carroll1997jme,Sabelhaus2010jme}, which have yielded calibrations of its stochastic shocks' distributions.
 #
 # #### Financial assets and frictions
 #
@@ -197,24 +196,61 @@ else:
 # to have a fraction  $\Contr_t\in[0,1]$ of their income diverted to their risky account instead.
 # This fraction can be tweaked by the agent whenever $\Adj_t = 1$; otherwise it stays at its
 # previous value, $\Contr_{t+1} = \Contr_t$.
-#
+
+# %% [markdown]
 # #### Timing
 #
-# \input{\FigDir/Timing_diagram}
+# <div>
+# <img src="Figures/Timing_diagram.png" width="600"/>
+# </div>
 #
-# Figure \ref{fig:Timing_diagram} summarizes the timing of stochastic shocks and
+# The previous figure summarizes the timing of stochastic shocks and
 # optimizing decisions that occur within a period of the life cycle model.
-#
-# ### Recursive representation of the model}
+
+# %% [markdown]
+# ### Recursive representation of the model
 #
 # Individual subscripts $i$ are dropped for simplicity. The value function for
 # an agent who is not allowed to rebalance his portfolio at time $t$ is
+#
 # \begin{equation*}
-#     \input{\EqDir/bellman_NAdj}
+# \begin{split}
+# V^{\NAdj}_{t}(M_t, N_t, P_t, \Contr_t) = \max_{C_t} u(C_t) 
+# + p_{t+1} &\beta\delta_{t+1} E_t \left[  V^{\Adj}_{t+1}\left( M_{t+1}, N_{t+1}, 
+# P_{t+1} \right)\right] +\\
+# \left(1-p_{t+1}\right) &\beta\delta_{t+1} E_t\left[V^{\NAdj}_{t+1}\left(M_{t+1}, 
+# N_{t+1}, P_{t+1}, \Contr_{t+1}\right) \right]\\
+# \text{Subject to:} \quad &\\
+# 0\leq& C_t \leq M_t \\
+# A_t =& M_t - C_t \\
+# M_{t+1} =& R A_t + (1-\Contr_{t+1}) Y_{t+1}\\
+# N_{t+1} =& \tilde{R}_{t+1}N_t + \Contr_{t+1}Y_{t+1}\\
+# P_{t+1} =& \Gamma_{t+1} \psi_{t+1} P_{t}\\
+# Y_{t+1} =& \theta_{t+1} P_{t+1}\\
+# \Contr_{t+1} =& \Contr_t
+# \end{split}
 # \end{equation*}
+#
 # and that of agent who is allowed to rebalance is
+#
 # \begin{equation*}
-#     \input{\EqDir/bellman_Adj}
+# \begin{split}
+# V^{\Adj}_{t}(M_t, N_t, P_t) = \max_{C_t,D_t,\Contr_{t+1}} 
+# u(C_t) + p_{t+1} &\beta\delta_{t+1} E_t \left[  V^{\Adj}_{t+1}\left( M_{t+1}, 
+# N_{t+1}, P_{t+1} \right)\right] +\\
+# \left(1-p_{t+1}\right) &\beta\delta_{t+1} E_t\left[V^{\NAdj}_{t+1}\left(M_{t+1}, 
+# N_{t+1}, P_{t+1}, \Contr_{t+1}\right) \right]\\
+# \text{Subject to:} \quad &\\
+# \quad -N_t \leq D_t \leq M_t, \quad \Contr_{t+1} \in& [0,1], \quad 0 \leq C_t \leq \tilde{M}_t\\
+# \hfill\\
+# \tilde{M}_t =& M_t - D_t\left(1-1_{[D_t\leq0]}\tau\right)\\
+# \tilde{N}_t =& N_t + D_t\\
+# A_t =& \tilde{M}_t - C_t \\
+# M_{t+1} =& R A_t + (1-\Contr_{t+1}) Y_{t+1}\\
+# N_{t+1} =& \tilde{R}_{t+1} \tilde{N}_t + \Contr_{t+1}Y_{t+1}\\
+# P_{t+1} =& \Gamma_{t+1}\psi_{t+1} P_{t}\\
+# Y_{t+1} =& \theta_{t+1} P_{t+1}
+# \end{split}
 # \end{equation*}
 
 # %% [markdown]
@@ -267,6 +303,10 @@ agents = {
     "Tax": RiskyContribConsumerType(**par_LC_tax),
     "Calvo": RiskyContribConsumerType(**par_LC_calvo),
     "Retirement": RiskyContribConsumerType(**par_LC_retirement),
+}
+
+agents = {
+    "Base": RiskyContribConsumerType(**par_LC_base)
 }
 
 for agent in agents:
@@ -361,3 +401,27 @@ g.map(sns.lineplot, "Age", "value", alpha=0.7)
 g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=4, title="")
 g.set_axis_labels("Age", "")
 g.set_titles(col_template = '{col_name}')
+
+# %% [markdown]
+# # References
+#
+# (<a id="cit-Carroll1997qje" href="#call-Carroll1997qje">Carroll, 1997</a>) Carroll Christopher D., ``_Buffer-Stock Saving and the Life Cycle/Permanent Income Hypothesis*_'', The Quarterly Journal of Economics, vol. 112, number 1, pp. 1-55, 02 1997.  [online](https://doi.org/10.1162/003355397555109)
+#
+# (<a id="cit-Cagetti2003jbes" href="#call-Cagetti2003jbes">Cagetti, 2003</a>) Cagetti Marco, ``_Wealth Accumulation Over the Life Cycle and Precautionary Savings_'', Journal of Business \& Economic Statistics, vol. 21, number 3, pp. 339-353,  2003.  [online](https://doi.org/10.1198/073500103288619007
+#     
+# )
+#
+# (<a id="cit-Cocco2005rfs" href="#call-Cocco2005rfs">Cocco, Gomes <em>et al.</em>, 2005</a>) Cocco Jo\~ao F., Gomes Francisco J. and Maenhout Pascal J., ``_Consumption and Portfolio Choice over the Life Cycle_'', The Review of Financial Studies, vol. 18, number 2, pp. 491-533, 02 2005.  [online](https://doi.org/10.1093/rfs/hhi017)
+#
+# (<a id="cit-Fagereng2017jof" href="#call-Fagereng2017jof">Fagereng, Gottlieb <em>et al.</em>, 2017</a>) Fagereng Andreas, Gottlieb Charles and Guiso Luigi, ``_Asset Market Participation and Portfolio Choice over the 
+# 	Life-Cycle_'', The Journal of Finance, vol. 72, number 2, pp. 705-750,  2017.  [online](https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.12484)
+#
+# (<a id="cit-Carroll1992bpea" href="#call-Carroll1992bpea">D., 1992</a>) D. Christopher, ``_The Buffer-Stock Theory of Saving: Some Macroeconomic Evidence_'', Brookings Papers on Economic Activity, vol. 1992, number 2, pp. 61--156,  1992.  [online](http://www.jstor.org/stable/2534582)
+#
+# (<a id="cit-Carroll1997jme" href="#call-Carroll1997jme">D. and A., 1997</a>) D. Christopher and A. Andrew, ``_The nature of precautionary wealth_'', Journal of Monetary Economics, vol. 40, number 1, pp. 41-71,  1997.  [online](https://www.sciencedirect.com/science/article/pii/S0304393297000366)
+#
+# (<a id="cit-Sabelhaus2010jme" href="#call-Sabelhaus2010jme">Sabelhaus and Song, 2010</a>) Sabelhaus John and Song Jae, ``_The great moderation in micro labor earnings_'', Journal of Monetary Economics, vol. 57, number 4, pp. 391-403,  2010.  [online](https://www.sciencedirect.com/science/article/pii/S0304393210000358)
+#
+#
+
+# %%
