@@ -42,9 +42,10 @@
 # ---
 
 # %% [markdown]
-# # A Two-Asset Savings Model with an Income-Contribution Scheme
-#
-# ## Mateo Velásquez-Giraldo
+# <h1><center>A Two-Asset Savings Model with an Income-Contribution Scheme</center></h1>
+# <h2><center>Mateo Velásquez-Giraldo</center></h2>
+# <h3><center> mvelasq2@jhu.edu </center></h3>
+# <h2><center> Johns Hopkins University </center></h2>
 #
 # This notebook demonstrates the use of the `RiskyContrib` agent type
 # of the [HARK Toolkit](https://econ-ark.org/toolkit). The model represents an agent who can
@@ -54,7 +55,7 @@
 # toolkit will allow users to adapt the model to realistic life-cycle calibrations, and
 # also to embedded it in heterogeneous-agents macroeconomic models.
 
-# %% code_folding=[]
+# %% code_folding=[0]
 # Preamble
 
 from HARK.ConsumptionSaving.ConsRiskyContribModel import (
@@ -181,14 +182,16 @@ else:
 # At any given period, an agent might not be able to rebalance his portfolio.
 # This ability is governed by an exogenous stochastic shock that is realized
 # at the start of the period
+#
 # \begin{equation*}
 # \Adj_t \sim \text{Bernoulli}(p_t),
 # \end{equation*}
+#
 # with $\Adj_t=1$ meaning that the agent can rebalance and $\NAdj_t=1$ ($\Adj_t = 0$)
 # forcing him to set $D_{i,t} = 0$. This friction is a parsimonious way to capture
 # the fact that portfolio rebalancing is costly and households do it sporadically.
-# Recent studies have advocated for \citep{Giglio2021aer} and used
-# \citep{Luetticke2021aej_macro} this kind of rebalancing friction.
+# Recent studies have advocated for \cite{Giglio2021aer} and used
+# \cite{Luetticke2021aej_macro} this kind of rebalancing friction.
 #
 # To partially evade the possibility of being unable to rebalance their accounts, agents
 # can use an income deduction scheme. By default, labor income ($Y_{i,t}$) is deposited to
@@ -256,8 +259,47 @@ else:
 # %% [markdown]
 # ## Parametrizations
 
-# %%
-# %% Base parametrization
+# %% [markdown]
+# This notebook will only demonstrate a life-cycle calibration of the model. However, the current implementation of the model is able to find and use the solution to infinite-horizon formulations (see the document in this repository for details).
+#
+# For the present exercise, I calibrate the model's mortality and income paths to represent  individuals who enter the model at age 25, retire exogenously at 65, and live to a maximum age of 90. Survival probabilities ($\delta$) come from the 2004 SSA life-tables for males. Income growth factors and volatilities ($\Gamma$, $\sigma_\psi$, $\sigma_\theta$) come from the calibration for high-school graduates in \cite{Cagetti2003jbes}.
+#
+# To highlight the effect of different financial frictions on wealth accumulation and portfolio choice, I consider different configurations for the risky-withdrawal tax $\tau$ and the probability of being able to rebalance $p$:
+#
+# \begin{itemize}
+# \item \textbf{Base}: the probability of being able to rebalance is $p = 1$
+# and the risky withdrawal tax rate is $\tau = 0$, both constant throughout the agents' lives.
+#
+# \item \textbf{Tax}: the risky withdrawal tax is constant at $10\%$ and the agents
+# can always rebalance their portfolios.
+#
+# \item \textbf{Calvo}: there is no risky withdrawal tax, but there is only a $25\%$ chance
+# that agents can rebalance their portfolios every year.
+#
+# \item \textbf{Retirement}: there is no risky withdrawal tax, but the agents' ability
+# to rebalance their portfolio is time-varying; they can rebalance their assets and pick
+# their income-deduction scheme for certain when they enter the model at age 25, but
+# then they have no chance of doing so again ($p=0$) until they retire. After retirement
+# at age 65, they can always rebalance their portfolio ($p=1$).
+# \end{itemize}
+#
+# The rest of the parameters take the following values
+#
+# | Name in HARK | Mathematical Symbol   | Value   |
+# |--------------|-----------------------|---------|
+# | `CRRA`       | $\rho$                | $5.0$   |
+# | `Rfree`      | $R$                   | $1.03$  |
+# | `DiscFac`    | $\beta$               | $0.9$   |
+# | `UnempPrb`   | $\mho$                | $0.05$  |
+# | `IncUnemp`   | $\mathcal{U}$         | $0.3$   |
+# | `RiskyAvg`   | $E[\tilde{R}]$        | $1.08$  |
+# | `RiskyStd`   | $\sqrt{V[\tilde{R}]}$ | $0.18$  |
+#
+#
+#
+#
+# %% Base parametrization code_folding=[0]
+# Base calibration setup
 
 # Make the problem life-cycle
 par_LC_base = init_risky_contrib_lifecycle.copy()
@@ -279,34 +321,34 @@ par_LC_base.update(
      "mNrmMax": 500, "nNrmMax":500}
 )
 
-# %% A version with the tax
+# %% A version with the tax code_folding=[0]
+# Alternative calibrations
+
+# Tax
 par_LC_tax = copy(par_LC_base)
 par_LC_tax["tau"] = 0.1
 
-# %% A version with the Calvo friction
+# Calvo
 par_LC_calvo = copy(par_LC_base)
 par_LC_calvo["AdjustPrb"] = 0.25
 
-# %% A calibration with a probability and tax that change at retirement
+# Retirement
 par_LC_retirement = copy(par_LC_base)
 par_LC_retirement["AdjustPrb"] = [1.0] + [0.0]*39 + [1.0]*25
 par_LC_retirement["tau"] = [0.0]*41 + [0.0]*24
 par_LC_retirement["UnempPrb"] = 0.0
 
 # %% [markdown]
-# # Solution and policy functions
+# ## Solution
+#
+# With the parametrizations created, I now create and solve the agents.
 
-# %%
 # %% Create and solve agents with all the parametrizations
 agents = {
     "Base": RiskyContribConsumerType(**par_LC_base),
     "Tax": RiskyContribConsumerType(**par_LC_tax),
     "Calvo": RiskyContribConsumerType(**par_LC_calvo),
     "Retirement": RiskyContribConsumerType(**par_LC_retirement),
-}
-
-agents = {
-    "Base": RiskyContribConsumerType(**par_LC_base)
 }
 
 for agent in agents:
@@ -319,26 +361,25 @@ for agent in agents:
 
 
 # %% [markdown]
-# ## Simulation and average life-cycle profiles
+# ## Policy function inspection
+#
+# Once agents have been solved, we can use their policy functions $\dFrac_t(m,n)$, $\Contr_t(\tilde{m},\tilde{n})$, and $c_t(\tilde{m},\tilde{n}, \Contr)$ for any period $t$.
 
 # %%
-# %% Solve and simulate
-n_agents = 10
-t_sim    = 500
-profiles = []
-for agent in agents:
-    agents[agent].AgentCount = n_agents
-    agents[agent].T_sim = t_sim
-    agents[agent].track_vars = ['pLvl','t_age','Adjust',
-                                'mNrm','nNrm','mNrmTilde','nNrmTilde','aNrm',
-                                'cNrm', 'Share', 'dfrac']
-    agents[agent].initialize_sim()
-    agents[agent].simulate()
-    profile = age_profiles(agents[agent])
-    profile['Model'] = agent
-    profiles.append(profile)
+# Example
+calib = "Base"
+t = 0
+print(agents[calib].solution[t].stage_sols["Reb"].dfracFunc_Adj(1,1))
+print(agents[calib].solution[t].stage_sols["Sha"].ShareFunc_Adj(1.2,0.8))
+print(agents[calib].solution[t].stage_sols["Cns"].cFunc(1.2,0.8,0.5))
 
-# %% Hark plot setup
+# %% [markdown]
+# I now illustrate the policy functions of different calibrations for an arbitrary period graphically.
+#
+# Note that the solution algorithm represents the three simultaneous decisions that an agent can take as happening sequentially in ''stages'', in the order `Rebalancing` -> `Income deduction share` -> `Consumption`. See the document in this repository for more details.
+
+# %% code_folding=[0]
+# Setup
 from HARK.utilities import (
     determine_platform,
     test_latex_installation,
@@ -353,13 +394,110 @@ except ImportError:  # windows and MacOS requires manual install
 
 setup_latex_env_notebook(pf, latexExists)
 
-# Whether to save the figures to Figures_dir
-saveFigs = True
+# General aesthetics
+sns.set_style("whitegrid")
+sns.set_context("paper", font_scale=1.5, rc={"lines.linewidth": 2.5})
 
-# Whether to draw the figures
-drawFigs = True
+# Parameters to feed to policy functions
+t = 10
+mNrmGrid = np.linspace(0, 40, 100)
+nNrm_vals = np.array([0.0, 20.0, 40])
+Share_vals = np.array([0.0, 0.5])
 
-# %% Plot life-cycle means
+# Evaluate policy functions
+polfuncs = pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals)
+
+# %% [markdown]
+# ### Rebalancing
+#
+# The solution to this stage problem will be the policy function $d_t(\cdot, \cdot)$
+# that gives the optimal flow from risk-free to risky assets, which can be negative.
+# However, it is convenient to define a normalized policy function $\dFrac_t$ as
+# \begin{equation*}
+# \dFrac_t(m, n) = \begin{cases}
+# d_t(m,n)/m, & \text{ if } d_t(m,n) \geq 0 \\
+# d_t(m,n)/n, & \text{ if } d_t(m,n) < 0
+# \end{cases}
+# \end{equation*}
+# so that $-1 \leq \dFrac(m,n) \leq 1$ for all $(m,n)$.
+
+# %% code_folding=[0]
+# Rebalancing fraction
+polfuncs["$n$"] = polfuncs["n"]
+g = sns.FacetGrid(
+    polfuncs[polfuncs.control == "dfrac"],
+    col="$n$",
+    hue="model",
+    height=3,
+    aspect=(7 / 3) * 1 / 3,
+)
+g.map(sns.lineplot, "m", "value", alpha=0.7)
+g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=4, title="")
+g.set_axis_labels("$m$", "Rebalancing fraction: $\dFrac$")
+
+# %% [markdown]
+# ### Income deduction share
+
+# %% code_folding=[0]
+# After rebalancing, m and n turn to their "tilde" versions. Create ntilde
+# just for seaborn's grid labels.
+polfuncs["$\\tilde{n}$"] = polfuncs["n"]
+polfuncs["$\\Contr$"] = polfuncs["Share"]
+
+# Share fraction
+g = sns.FacetGrid(
+    polfuncs[polfuncs.control == "Share"],
+    col="$\\tilde{n}$",
+    hue="model",
+    height=3,
+    aspect=(7 / 3) * 1 / 3,
+)
+g.map(sns.lineplot, "m", "value", alpha=0.7)
+g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=4, title="")
+g.set_axis_labels("$\\tilde{m}$", r"Deduction Share: $\Contr$")
+
+# %% [markdown]
+# ### Consumption
+
+# %% code_folding=[0]
+# Consumption
+g = sns.FacetGrid(
+    polfuncs[polfuncs.control == "c"],
+    col="$\\tilde{n}$",
+    row="$\\Contr$",
+    hue="model",
+    height=3,
+    aspect=(7 / 3) * 1 / 3,
+)
+g.map(sns.lineplot, "m", "value", alpha=0.7)
+g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=4, title="")
+g.set_axis_labels("$\\tilde{m}$", "Consumption: $c$")
+
+# %% [markdown]
+# ## Simulation and average life-cycle profiles
+
+# %% [markdown]
+# With the policy functions, it is now simple to populations of agents. I now simulate many agents for every calibrations to obtain the average lifetime profiles of relevant variables like consumption, income, and wealth in its different components.
+# %% Solve and simulate code_folding=[0]
+# Simulation
+
+n_agents = 100
+t_sim    = 500
+profiles = []
+for agent in agents:
+    agents[agent].AgentCount = n_agents
+    agents[agent].T_sim = t_sim
+    agents[agent].track_vars = ['pLvl','t_age','Adjust',
+                                'mNrm','nNrm','mNrmTilde','nNrmTilde','aNrm',
+                                'cNrm', 'Share', 'dfrac']
+    agents[agent].initialize_sim()
+    agents[agent].simulate()
+    profile = age_profiles(agents[agent])
+    profile['Model'] = agent
+    profiles.append(profile)
+
+# %% Plot life-cycle means code_folding=[0]
+# Plot
 
 simdata = pd.concat(profiles)
 
@@ -423,5 +561,3 @@ g.set_titles(col_template = '{col_name}')
 # (<a id="cit-Sabelhaus2010jme" href="#call-Sabelhaus2010jme">Sabelhaus and Song, 2010</a>) Sabelhaus John and Song Jae, ``_The great moderation in micro labor earnings_'', Journal of Monetary Economics, vol. 57, number 4, pp. 391-403,  2010.  [online](https://www.sciencedirect.com/science/article/pii/S0304393210000358)
 #
 #
-
-# %%
