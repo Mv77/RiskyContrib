@@ -57,7 +57,7 @@
 # %%
 # Preamble
 
-from HARK.ConsumptionSaving.ConsRiskyAssetModel import (
+from HARK.ConsumptionSaving.ConsRiskyContribModel import (
     RiskyContribConsumerType,
     init_risky_contrib_lifecycle,
 )
@@ -97,6 +97,125 @@ else:
 
 # %% [markdown]
 # ## Model Description
+#
+# I now discuss the main components of the model informally, and leave its full
+# recursive mathematical representation for Section \ref{sec:recursive}.
+#
+# ### Time, mortality, and utility
+#
+# Time advances in discrete steps that I will index with $t$. The model can
+# be used in both infinite and finite-horizon versions.
+#
+# Agents face an exogenous risk of death $\delta_t$ each period, which becomes certain at the 
+# maximum age of the finite-horizon version. There are no intentional bequests; agents
+# will consume all of their resources if they reach the last period, but they can leave
+# accidental bequests upon premature death.
+#
+# In each period, agents derive utility from consumption only. Their utility function
+# follows a constant relative risk aversion specification. Formally, for a level of 
+# consumption $C$, the agent derives instant utility
+# \begin{equation}
+# 	u(C) = \frac{C^{1-\rho}}{1- \rho}.
+# \end{equation}
+#
+# #### Income process
+#
+# Agents supply labor inelastically. Their labor earnings $Y_{i,t}$ are the product of a
+# permanent component $P_{i,t}$ and a transitory stochastic component $\theta_{i,t}$ as
+# in \cite{Carroll1997qje},  where $i$ indexes different agents. Formally,
+# \begin{equation*}
+# \begin{split}
+# \ln Y_{i,t} &= \ln P_{i,t} + \ln \theta_{i,t} \\
+# \ln P_{i,t} &= \ln P_{i,t-1} + \ln \Gamma_{i,t} + \ln \psi_{i,t}
+# \end{split}
+# \end{equation*}
+# where $\Gamma_{i,t}$ is a deterministic growth factor that can capture
+# life-cycle patterns in earnings, and
+# $\ln \psi_{i,t}\sim \mathcal{N}(-\sigma^2_{\psi,t}/2, \sigma_{\psi,t})$
+# is a multiplicative shock to permanent income\footnote{The mean of the shock is set so that $E[\psi_{i,t}] = 1$.}.
+#
+# The transitory component $\theta_{i,t}$ is a mixture that models unemployment and
+# other temporal fluctuations in income as
+# \begin{equation*}
+# \ln\theta_{i,t} = \begin{cases}
+# \ln \mathcal{U}, & \text{With probability } \mho\\
+# \ln \tilde{\theta}_{i,t}\sim\mathcal{N}(-\sigma^2_{\theta,t}/2, \sigma_{\theta,t}), & \text{With probability } 1-\mho,
+# \end{cases}
+# \end{equation*}
+# with $\mho$ representing the probability of unemployment and $\mathcal{U}$ the replacement
+# factor of unemployment benefits.
+#
+# This specification of the income process is parsimonious and flexible enough to accommodate
+# life-cycle patterns in income growth and volatility, transitory unemployment and exogenous
+# retirement. Introduced by \cite{Carroll1997qje}, this income specification is common in studies
+# of life-cycle wealth accumulation and portfolio choice; see e.g.,
+# \cite{Cagetti2003jbes,Cocco2005rfs,Fagereng2017jof}. The specification has
+# also been used in studies of income volatility, which have yielded calibrations of its stochastic
+# shocks' distributions \citep[see e.g.,][]{Carroll1992bpea,Carroll1997jme,Sabelhaus2010jme}
+#
+# #### Financial assets and frictions
+#
+# Agents smooth their consumption by saving and have two assets
+# available for this purpose. The first is a risk-free liquid account with 
+# constant per-period return factor $R$. The second has a stochastic return
+# factor $\tilde{R}$ that is log-normally distributed and independent across
+# time. Various interpretations such as stocks, a retirement fund, or entrepreneurial
+# capital could be given to the risky asset. Importantly, consumption must be paid for
+# using funds from the risk-free account. The levels of risk-free and risky assets
+# owned by the agent will both be state variables, denoted with $M_{i,t}$ and $N_{i,t}$
+# respectively.
+#
+# Portfolio rebalancing takes place by moving funds between the risk-free
+# and risky accounts. These flows are one of the agents' control variables
+# and are denoted as $D_{i,t}$, with $D_{i,t}>0$ representing a movement of
+# funds from the risk-free to the risky account. Withdrawals from the risky
+# account are subject to a constant-rate tax $\tau$ which can represent, for
+# instance, capital-gains realization taxes or early retirement-fund withdrawal
+# penalties. In sum, denoting post-rebalancing asset levels with $\tilde{\cdot}$,
+# \begin{equation*}
+# \begin{split}
+# \tilde{M}_{i,t} &= M_{i,t} - D_{i,t}(1 - 1_{[D_{i,t}\leq0]}\tau)\\
+# \tilde{N}_{i,t} &= N_{i,t} + D_{i,t}.
+# \end{split}
+# \end{equation*}
+#
+# At any given period, an agent might not be able to rebalance his portfolio.
+# This ability is governed by an exogenous stochastic shock that is realized
+# at the start of the period
+# \begin{equation*}
+# \Adj_t \sim \text{Bernoulli}(p_t),
+# \end{equation*}
+# with $\Adj_t=1$ meaning that the agent can rebalance and $\NAdj_t=1$ ($\Adj_t = 0$)
+# forcing him to set $D_{i,t} = 0$. This friction is a parsimonious way to capture
+# the fact that portfolio rebalancing is costly and households do it sporadically.
+# Recent studies have advocated for \citep{Giglio2021aer} and used
+# \citep{Luetticke2021aej_macro} this kind of rebalancing friction.
+#
+# To partially evade the possibility of being unable to rebalance their accounts, agents
+# can use an income deduction scheme. By default, labor income ($Y_{i,t}$) is deposited to
+# the risk-free liquid account at the start of every period. However, agents can pre-commit
+# to have a fraction  $\Contr_t\in[0,1]$ of their income diverted to their risky account instead.
+# This fraction can be tweaked by the agent whenever $\Adj_t = 1$; otherwise it stays at its
+# previous value, $\Contr_{t+1} = \Contr_t$.
+#
+# #### Timing
+#
+# \input{\FigDir/Timing_diagram}
+#
+# Figure \ref{fig:Timing_diagram} summarizes the timing of stochastic shocks and
+# optimizing decisions that occur within a period of the life cycle model.
+#
+# ### Recursive representation of the model}
+#
+# Individual subscripts $i$ are dropped for simplicity. The value function for
+# an agent who is not allowed to rebalance his portfolio at time $t$ is
+# \begin{equation*}
+#     \input{\EqDir/bellman_NAdj}
+# \end{equation*}
+# and that of agent who is allowed to rebalance is
+# \begin{equation*}
+#     \input{\EqDir/bellman_Adj}
+# \end{equation*}
 
 # %% [markdown]
 # ## Parametrizations
@@ -120,7 +239,7 @@ par_LC_base["vFuncBool"] = False
 
 # Temporarily make grids sparser
 par_LC_base.update(
-    {"aXtraCount": 30, "mNrmCount": 30, "nNrmCount": 30,
+    {"aXtraCount": 25, "mNrmCount": 25, "nNrmCount": 25,
      "mNrmMax": 500, "nNrmMax":500}
 )
 
@@ -172,7 +291,7 @@ for agent in agents:
     agents[agent].T_sim = t_sim
     agents[agent].track_vars = ['pLvl','t_age','Adjust',
                                 'mNrm','nNrm','mNrmTilde','nNrmTilde','aNrm',
-                                'cNrm', 'Share', 'DNrm']
+                                'cNrm', 'Share', 'dfrac']
     agents[agent].initialize_sim()
     agents[agent].simulate()
     profile = age_profiles(agents[agent])
