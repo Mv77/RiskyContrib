@@ -378,7 +378,7 @@ print(agents[calib].solution[t].stage_sols["Cns"].cFunc(1.2,0.8,0.5))
 #
 # Note that the solution algorithm represents the three simultaneous decisions that an agent can take as happening sequentially in ''stages'', in the order `Rebalancing` -> `Income deduction share` -> `Consumption`. See the document in this repository for more details.
 
-# %% code_folding=[0]
+# %% code_folding=[]
 # Setup
 from HARK.utilities import (
     determine_platform,
@@ -400,6 +400,7 @@ sns.set_context("paper", font_scale=1.5, rc={"lines.linewidth": 2.5})
 
 # Parameters to feed to policy functions
 t = 10
+age = t + 24
 mNrmGrid = np.linspace(0, 40, 100)
 nNrm_vals = np.array([0.0, 20.0, 40])
 Share_vals = np.array([0.0, 0.5])
@@ -421,7 +422,7 @@ polfuncs = pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals)
 # \end{equation*}
 # so that $-1 \leq \dFrac(m,n) \leq 1$ for all $(m,n)$.
 
-# %% code_folding=[0]
+# %% code_folding=[]
 # Rebalancing fraction
 polfuncs["$n$"] = polfuncs["n"]
 g = sns.FacetGrid(
@@ -459,7 +460,7 @@ g.set_axis_labels("$\\tilde{m}$", r"Deduction Share: $\Contr$")
 # %% [markdown]
 # ### Consumption
 
-# %% code_folding=[0]
+# %% code_folding=[]
 # Consumption
 g = sns.FacetGrid(
     polfuncs[polfuncs.control == "c"],
@@ -477,7 +478,7 @@ g.set_axis_labels("$\\tilde{m}$", "Consumption: $c$")
 # ## Simulation and average life-cycle profiles
 
 # %% [markdown]
-# With the policy functions, it is now simple to populations of agents. I now simulate many agents for every calibrations to obtain the average lifetime profiles of relevant variables like consumption, income, and wealth in its different components.
+# With the policy functions, it is now simple to simulate populations of agents. I now simulate many agents for every calibration to obtain the average lifetime profiles of relevant variables like consumption, income, and wealth in its different components.
 # %% Solve and simulate code_folding=[0]
 # Simulation
 
@@ -546,18 +547,22 @@ g.set_titles(col_template = '{col_name}')
 # (<a id="cit-Carroll1997qje" href="#call-Carroll1997qje">Carroll, 1997</a>) Carroll Christopher D., ``_Buffer-Stock Saving and the Life Cycle/Permanent Income Hypothesis*_'', The Quarterly Journal of Economics, vol. 112, number 1, pp. 1-55, 02 1997.  [online](https://doi.org/10.1162/003355397555109)
 #
 # (<a id="cit-Cagetti2003jbes" href="#call-Cagetti2003jbes">Cagetti, 2003</a>) Cagetti Marco, ``_Wealth Accumulation Over the Life Cycle and Precautionary Savings_'', Journal of Business \& Economic Statistics, vol. 21, number 3, pp. 339-353,  2003.  [online](https://doi.org/10.1198/073500103288619007
-#     
+#
 # )
 #
 # (<a id="cit-Cocco2005rfs" href="#call-Cocco2005rfs">Cocco, Gomes <em>et al.</em>, 2005</a>) Cocco Jo\~ao F., Gomes Francisco J. and Maenhout Pascal J., ``_Consumption and Portfolio Choice over the Life Cycle_'', The Review of Financial Studies, vol. 18, number 2, pp. 491-533, 02 2005.  [online](https://doi.org/10.1093/rfs/hhi017)
 #
-# (<a id="cit-Fagereng2017jof" href="#call-Fagereng2017jof">Fagereng, Gottlieb <em>et al.</em>, 2017</a>) Fagereng Andreas, Gottlieb Charles and Guiso Luigi, ``_Asset Market Participation and Portfolio Choice over the 
+# (<a id="cit-Fagereng2017jof" href="#call-Fagereng2017jof">Fagereng, Gottlieb <em>et al.</em>, 2017</a>) Fagereng Andreas, Gottlieb Charles and Guiso Luigi, ``_Asset Market Participation and Portfolio Choice over the
 # 	Life-Cycle_'', The Journal of Finance, vol. 72, number 2, pp. 705-750,  2017.  [online](https://onlinelibrary.wiley.com/doi/abs/10.1111/jofi.12484)
 #
-# (<a id="cit-Carroll1992bpea" href="#call-Carroll1992bpea">D., 1992</a>) D. Christopher, ``_The Buffer-Stock Theory of Saving: Some Macroeconomic Evidence_'', Brookings Papers on Economic Activity, vol. 1992, number 2, pp. 61--156,  1992.  [online](http://www.jstor.org/stable/2534582)
+# (<a id="cit-Carroll1992bpea" href="#call-Carroll1992bpea">Carroll, 1992</a>) Carroll Christopher D., ``_The Buffer-Stock Theory of Saving: Some Macroeconomic Evidence_'', Brookings Papers on Economic Activity, vol. 1992, number 2, pp. 61--156,  1992.  [online](http://www.jstor.org/stable/2534582)
 #
-# (<a id="cit-Carroll1997jme" href="#call-Carroll1997jme">D. and A., 1997</a>) D. Christopher and A. Andrew, ``_The nature of precautionary wealth_'', Journal of Monetary Economics, vol. 40, number 1, pp. 41-71,  1997.  [online](https://www.sciencedirect.com/science/article/pii/S0304393297000366)
+# (<a id="cit-Carroll1997jme" href="#call-Carroll1997jme">Carroll and Samwick, 1997</a>) Carroll Christopher D. and Samwick Andrew A., ``_The nature of precautionary wealth_'', Journal of Monetary Economics, vol. 40, number 1, pp. 41-71,  1997.  [online](https://www.sciencedirect.com/science/article/pii/S0304393297000366)
 #
 # (<a id="cit-Sabelhaus2010jme" href="#call-Sabelhaus2010jme">Sabelhaus and Song, 2010</a>) Sabelhaus John and Song Jae, ``_The great moderation in micro labor earnings_'', Journal of Monetary Economics, vol. 57, number 4, pp. 391-403,  2010.  [online](https://www.sciencedirect.com/science/article/pii/S0304393210000358)
+#
+# (<a id="cit-Giglio2021aer" href="#call-Giglio2021aer">Giglio, Maggiori <em>et al.</em>, 2021</a>) Giglio Stefano, Maggiori Matteo, Stroebel Johannes <em>et al.</em>, ``_Five Facts about Beliefs and Portfolios_'', American Economic Review, vol. 111, number 5, pp. 1481-1522, May 2021.  [online](https://www.aeaweb.org/articles?id=10.1257/aer.20200243)
+#
+# (<a id="cit-Luetticke2021aej_macro" href="#call-Luetticke2021aej_macro">Luetticke, 2021</a>) Luetticke Ralph, ``_Transmission of Monetary Policy with Heterogeneity in Household Portfolios_'', American Economic Journal: Macroeconomics, vol. 13, number 2, pp. 1-25, April 2021.  [online](https://www.aeaweb.org/articles?id=10.1257/mac.20190064)
 #
 #
