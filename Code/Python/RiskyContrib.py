@@ -315,11 +315,9 @@ par_LC_base["tau"] = 0.0
 par_LC_base["DiscreteShareBool"] = False
 par_LC_base["vFuncBool"] = False
 
-# Temporarily make grids sparser
-par_LC_base.update(
-    {"aXtraCount": 25, "mNrmCount": 25, "nNrmCount": 25,
-     "mNrmMax": 500, "nNrmMax":500}
-)
+# Make grids go up to higher levels of resources
+# (one of the calibration produces high levels of nNrm)
+par_LC_base.update({"mNrmMax": 500, "nNrmMax":500})
 
 # %% A version with the tax code_folding=[0]
 # Alternative calibrations
@@ -460,7 +458,7 @@ g.set_axis_labels("$\\tilde{m}$", r"Deduction Share: $\Contr$")
 # %% [markdown]
 # ### Consumption
 
-# %% code_folding=[]
+# %% code_folding=[0]
 # Consumption
 g = sns.FacetGrid(
     polfuncs[polfuncs.control == "c"],
@@ -478,7 +476,7 @@ g.set_axis_labels("$\\tilde{m}$", "Consumption: $c$")
 # ## Simulation and average life-cycle profiles
 
 # %% [markdown]
-# With the policy functions, it is now simple to simulate populations of agents. I now simulate many agents for every calibration to obtain the average lifetime profiles of relevant variables like consumption, income, and wealth in its different components.
+# With the policy functions, it is easy to simulate populations of agents. I now simulate many agents for every calibration to obtain the average lifetime profiles of relevant variables like consumption, income, and wealth in its different components.
 # %% Solve and simulate code_folding=[0]
 # Simulation
 
