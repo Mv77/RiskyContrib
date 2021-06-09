@@ -8,12 +8,28 @@ from HARK.ConsumptionSaving.ConsRiskyContribModel import (
 )
 from time import time
 from copy import copy
-
-import numpy as np
 import seaborn as sns
+import matplotlib.pyplot as plt
 import pandas as pd
-from tools import pol_funcs_dframe, age_profiles
 import os
+
+if __name__ == '__main__':
+    # Running as a script
+    from tools import pol_funcs_dframe, age_profiles
+else:
+    # Running from do_ALL
+    from Simulations.tools import pol_funcs_dframe, age_profiles
+
+# %% Path for figures
+
+if __name__ == '__main__':
+    # Running as a script
+    my_file_path = os.path.abspath("../../../")
+else:
+    # Running from do_ALL
+    my_file_path = os.path.dirname(os.path.abspath("do_ALL.py"))
+
+FigPath = os.path.join(my_file_path,"Figures/")
 
 # %% Base parametrization
 
@@ -109,7 +125,7 @@ saveFigs = True
 drawFigs = True
 
 
-def make(fig, name, target_dir="../../../Figures"):
+def make(fig, name, target_dir=FigPath):
     fig.savefig(os.path.join(target_dir, "{}.pdf".format(name)))
 
 # %% Plot life-cycle means
@@ -155,3 +171,4 @@ g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=4, title="")
 g.set_axis_labels("Age", "")
 g.set_titles(col_template = '{col_name}')
 make(g, "LC_age_profiles")
+plt.pause(1)

@@ -12,8 +12,26 @@ from copy import copy
 
 import numpy as np
 import seaborn as sns
-from tools import pol_funcs_dframe
+import matplotlib.pyplot as plt
 import os
+
+if __name__ == '__main__':
+    # Running as a script
+    from tools import pol_funcs_dframe
+else:
+    # Running from do_ALL
+    from Simulations.tools import pol_funcs_dframe
+
+# %% Path for figures
+
+if __name__ == '__main__':
+    # Running as a script
+    my_file_path = os.path.abspath("../../../")
+else:
+    # Running from do_ALL
+    my_file_path = os.path.dirname(os.path.abspath("do_ALL.py"))
+
+FigPath = os.path.join(my_file_path,"Figures/")
 
 # %% Base parametrization
 
@@ -80,7 +98,7 @@ saveFigs = True
 drawFigs = True
 
 
-def make(fig, name, target_dir="../../../Figures"):
+def make(fig, name, target_dir=FigPath):
     fig.savefig(os.path.join(target_dir, "{}.pdf".format(name)))
 
 
@@ -112,6 +130,7 @@ g.map(sns.lineplot, "m", "value", alpha=0.7)
 g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
 g.set_axis_labels("$m$", "Rebalancing fraction: $\dFrac$")
 make(g, "inf_dFunc")
+plt.pause(1)
 
 # After rebalancing, m and n turn to their "tilde" versions. Create ntilde
 # just for seaborn's grid labels.
@@ -131,6 +150,7 @@ g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
 g.set_axis_labels("$\\tilde{m}$", r"Deduction Share: $\Contr$")
 
 make(g, "inf_ShareFunc")
+plt.pause(1)
 
 # Consumption fraction
 g = sns.FacetGrid(
@@ -146,6 +166,7 @@ g.add_legend(bbox_to_anchor=[0.5, 0.0], ncol=3, title="")
 g.set_axis_labels("$\\tilde{m}$", "Consumption: $c$")
 
 make(g, "inf_cFunc")
+plt.pause(1)
 
 # %% Rebalancing viz
 
@@ -162,7 +183,7 @@ for i in range(len(agents)):
     
     name = list(agents.keys())[i]
     
-    d = agents[name].solution[0].stageSols["Reb"].DFuncAdj(m_tiled, n_tiled)
+    d = agents[name].solution[0].stage_sols["Reb"].dfracFunc_Adj(m_tiled, n_tiled)
     
     mTil_tiled, nTil_tiled = rebalance_assets(d, m_tiled, n_tiled,
                                               agents[name].tau)
@@ -182,3 +203,4 @@ for i in range(len(agents)):
     plt.ylabel('Risky assets $n$ and $\\tilde{n}$')
 
     make(g, "inf_rebalance_"+name)
+    plt.pause(1)
