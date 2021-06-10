@@ -1,3 +1,4 @@
 #!/bin/sh
 jupyter contrib nbextension install --user
-jupyter nbextension enable --py widgetsnbextension
+jupyter nbextension enable collapsible_headings/main
+jupyter nbextension enable --py latex_envs
