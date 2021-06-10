@@ -1,2 +1,4 @@
 #!/bin/sh
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple econ-ark
+jupyter contrib nbextension install --user
+jupyter nbextension enable --py widgetsnbextension
+jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.38 --minimize=False
