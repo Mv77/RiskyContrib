@@ -2,4 +2,4 @@
 jupyter contrib nbextension install --user
 jupyter nbextension enable collapsible_headings/main
 jupyter nbextension enable --py latex_envs
-jupyter nbextension enable --py Purpose
+jupyter nbextension enable --py load_tex_macros
