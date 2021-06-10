@@ -1,5 +1,6 @@
 #!/bin/sh
 jupyter contrib nbextension install --user
 jupyter nbextension enable collapsible_headings/main
+jupyter nbextension enable codefolding/main
 jupyter nbextension enable --py latex_envs
 jupyter nbextension enable load_tex_macros
