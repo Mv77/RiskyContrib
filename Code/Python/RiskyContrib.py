@@ -317,7 +317,8 @@ par_LC_base["vFuncBool"] = False
 
 # Make grids go up to higher levels of resources
 # (one of the calibration produces high levels of nNrm)
-par_LC_base.update({"mNrmMax": 500, "nNrmMax":500})
+par_LC_base.update({"mNrmMax": 500, "nNrmMax":500,
+                    "aXtraCount": 20, "mNrmCount": 20, "nNrmCount": 20})
 
 # %% A version with the tax code_folding=[0]
 # Alternative calibrations
@@ -347,6 +348,10 @@ agents = {
     "Tax": RiskyContribConsumerType(**par_LC_tax),
     "Calvo": RiskyContribConsumerType(**par_LC_calvo),
     "Retirement": RiskyContribConsumerType(**par_LC_retirement),
+}
+
+agents = {
+    "Base": RiskyContribConsumerType(**par_LC_base),
 }
 
 for agent in agents:
