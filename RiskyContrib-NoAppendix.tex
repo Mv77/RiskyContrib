@@ -22,7 +22,15 @@ REMARK
 
 \hypertarget{abstract}{}
 \begin{abstract}
-This paper contains the highlights from the REMARK file in Code>Python folder.
+This paper develops a two-asset consumption-savings model and serves as
+the documentation of an open-source implementation of methods to solve and
+simulate it in the \href{https://econ-ark.org/toolkit}{HARK}
+toolkit \citep{carroll2018HARK}. The model represents an agent who can
+save using two different assets---one risky and the other risk-free---to insure
+against fluctuations in his income, but faces frictions to transferring funds between
+assets. The flexibility of its implementation and its inclusion in the HARK
+toolkit will allow users to adapt the model to realistic life-cycle calibrations, and
+also to embedded it in heterogeneous-agents macroeconomic models.
 \end{abstract}
 
 % Various resources 
@@ -32,13 +40,12 @@ This paper contains the highlights from the REMARK file in Code>Python folder.
 \begin{center}
 \begin{tabbing}
 \texttt{~Archive:~} \= \= \url{http://econ.jhu.edu/people/ccarroll/BufferStockTheory.zip} \kill \\  %
-\texttt{~~GitHub:~} \> \> 
-\url{http://github.com/econ-ark/REMARK/REMARKS/CGMPortfolio} \\
-\texttt{~~~~~~~~~~} \> \> \textit{(In GitHub repo, see \texttt{/Code} for tools for solving and simulating the model)} \\
+\texttt{~~GitHub:~} \> \> \url{https://github.com/Mv77/RiskyContrib} \\
+\texttt{~~HARK:~} \> \> \url{https://github.com/econ-ark/HARK/} \\
 \end{tabbing}
 \end{center}
           
-\href{https://mybinder.org/v2/gh/matthew-zahn/CGMPort/develop?filepath=REMARK\%2FCGM_REMARK.ipynb}{CLICK HERE} for an interactive \href{https://en.wikipedia.org/wiki/Project\_Jupyter\#Jupyter_Notebook}{Jupyter Notebook} that uses the \href{https://econ-ark/HARK}{Econ-ARK/HARK} toolkit to produce our figures (warning: it may take several minutes to launch).  Information about citing the toolkit can be found at \href{https://econ-ark.org/acknowledging/}{Acknowleding Econ-ARK}.
+\href{https://mybinder.org/v2/gh/Mv77/RiskyContrib/main?filepath=Code\%2FPython\%2FRiskyContrib.ipynb}{CLICK HERE} for an interactive \href{https://en.wikipedia.org/wiki/Project\_Jupyter\#Jupyter_Notebook}{Jupyter Notebook} that uses the \href{https://econ-ark/HARK}{Econ-ARK/HARK} toolkit to produce our figures (warning: it may take several minutes to launch).  Information about citing the toolkit can be found at \href{https://econ-ark.org/acknowledging/}{Acknowleding Econ-ARK}.
 } % end parbox{\textwidth}
 \end{small}
 
@@ -56,15 +63,7 @@ This paper contains the highlights from the REMARK file in Code>Python folder.
 \hypertarget{Introduction}{}
 \section{Introduction}
 
-This paper develops a two-asset consumption-savings model and serves as
-the documentation of an open-source implementation of methods to solve and
-simulate it in the \href{https://econ-ark.org/toolkit}{HARK}
-toolkit \citep{carroll2018HARK}. The model represents an agent who can
-save using two different assets---one risky and the other risk-free---to insure
-against fluctuations in his income, but faces frictions to transferring funds between
-assets. The flexibility of its implementation and its inclusion in the HARK
-toolkit will allow users to adapt the model to realistic life-cycle calibrations, and
-also to embedded it in heterogeneous-agents macroeconomic models.
+
 
 \hypertarget{The model}{}
 \section{The model}
