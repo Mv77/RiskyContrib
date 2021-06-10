@@ -36,7 +36,7 @@
 #       equation: Ctrl-E
 #       itemize: Ctrl-I
 #     labels_anchors: false
-#     latex_user_defs: false
+#     latex_user_defs: true
 #     report_style_numbering: false
 #     user_envs_cfg: false
 # ---
@@ -204,7 +204,7 @@ else:
 # #### Timing
 #
 # <div>
-# <img src="Figures/Timing_diagram.png" width="600"/>
+# <img src="Figures/Timing_diagram.PNG" width="600"/>
 # </div>
 #
 # The previous figure summarizes the timing of stochastic shocks and
