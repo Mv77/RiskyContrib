@@ -1,2 +1,3 @@
 #!/bin/sh
 pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple econ-ark
+pip install git+https://github.com/Mv77/HARK@NewContrib
