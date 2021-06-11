@@ -317,8 +317,7 @@ par_LC_base["vFuncBool"] = False
 
 # Make grids go up to higher levels of resources
 # (one of the calibration produces high levels of nNrm)
-par_LC_base.update({"mNrmMax": 500, "nNrmMax":500,
-                    "aXtraCount": 20, "mNrmCount": 20, "nNrmCount": 20})
+par_LC_base.update({"mNrmMax": 500, "nNrmMax":500})
 
 # %% A version with the tax code_folding=[0]
 # Alternative calibrations
@@ -350,10 +349,6 @@ agents = {
     "Retirement": RiskyContribConsumerType(**par_LC_retirement),
 }
 
-agents = {
-    "Base": RiskyContribConsumerType(**par_LC_base),
-}
-
 for agent in agents:
 
     print("Now solving " + agent)
@@ -381,7 +376,7 @@ print(agents[calib].solution[t].stage_sols["Cns"].cFunc(1.2,0.8,0.5))
 #
 # Note that the solution algorithm represents the three simultaneous decisions that an agent can take as happening sequentially in ''stages'', in the order `Rebalancing` -> `Income deduction share` -> `Consumption`. See the document in this repository for more details.
 
-# %% code_folding=[]
+# %% code_folding=[0]
 # Setup
 from HARK.utilities import (
     determine_platform,
@@ -425,7 +420,7 @@ polfuncs = pol_funcs_dframe(agents, t, mNrmGrid, nNrm_vals, Share_vals)
 # \end{equation*}
 # so that $-1 \leq \dFrac(m,n) \leq 1$ for all $(m,n)$.
 
-# %% code_folding=[]
+# %% code_folding=[0]
 # Rebalancing fraction
 polfuncs["$n$"] = polfuncs["n"]
 g = sns.FacetGrid(
