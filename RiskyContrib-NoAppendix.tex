@@ -45,30 +45,40 @@ also to embedded it in heterogeneous-agents macroeconomic models.
 \end{tabbing}
 \end{center}
           
-\href{https://mybinder.org/v2/gh/Mv77/RiskyContrib/main?filepath=Code\%2FPython\%2FRiskyContrib.ipynb}{CLICK HERE} for an interactive \href{https://en.wikipedia.org/wiki/Project\_Jupyter\#Jupyter_Notebook}{Jupyter Notebook} that uses the \href{https://econ-ark/HARK}{Econ-ARK/HARK} toolkit to produce our figures (warning: it may take several minutes to launch).  Information about citing the toolkit can be found at \href{https://econ-ark.org/acknowledging/}{Acknowleding Econ-ARK}.
+\href{https://mybinder.org/v2/gh/Mv77/RiskyContrib/main?filepath=Code\%2FPython\%2FRiskyContrib.ipynb}{CLICK HERE}
+for an interactive \href{https://en.wikipedia.org/wiki/Project\_Jupyter\#Jupyter_Notebook}{Jupyter Notebook} that
+uses the \href{https://econ-ark/HARK}{Econ-ARK/HARK} toolkit to produce a summarized demonstration of the model
+presented in this document (warning: it may take several minutes to launch).  Information about citing the toolkit can be found at \href{https://econ-ark.org/acknowledging/}{Acknowleding Econ-ARK}.
 } % end parbox{\textwidth}
 \end{small}
 
 \begin{authorsinfo}
-\name{Contact: \href{mailto:mvelasq2@jhu.edu}{\texttt{mvelasq2@jhu.edu}}, \href{mailto:matthew.zahn@jhu.edu}{\texttt{matthew.zahn@jhu.edu}}, Department of Economics, 590 Wyman Hall, Johns Hopkins University, Baltimore, MD 21218, \url{https://t.co/uaflostQyF?amp=1}, \url{http://matthewvzahn.com}.}
+\name{Contact: \href{mailto:mvelasq2@jhu.edu}{\texttt{mvelasq2@jhu.edu}}, Department of Economics, 590 Wyman Hall, Johns Hopkins University, Baltimore, MD 21218, \url{https://mv77.github.io/}, \url{https://mv77.github.io/}.}
 \end{authorsinfo}
 
-\thanks{All numerical results herein were produced using the \href{https://econ-ark/HARK}{Econ-ARK/HARK} toolkit; for further reference options see \href{https://econ-ark.org/acknowledging/}{Acknowleding Econ-ARK}.  Thanks to Chris Carroll and Sylvain Catherine for comments and guidance.}
+\thanks{
+The development of the model presented in this document and its computational implementation
+greatly benefited from discussions with Christopher D. Carroll. Additional comments and guidance
+were provided by Sebastian Benthall, Matthew N. White and \href{https://econ-ark/HARK}{Econ-ARK/HARK}
+team.
+}
 
 \titlepagefinish
 
-\newtheorem{defn}{Definition}
-\newtheorem{theorem}{Theorem}
-
-\hypertarget{Introduction}{}
-\section{Introduction}
-
-
+This paper develops a two-asset consumption-savings model and serves as
+the documentation of an open-source implementation of methods to solve and
+simulate it in the \href{https://econ-ark.org/toolkit}{HARK}
+toolkit \citep{carroll2018HARK}. The model represents an agent who can
+save using two different assets---one risky and the other risk-free---to insure
+against fluctuations in his income, but faces frictions to transferring funds between
+assets. The flexibility of its implementation and its inclusion in the HARK
+toolkit will allow users to adapt the model to realistic life-cycle calibrations, and
+also to embedded it in heterogeneous-agents macroeconomic models.
 
 \hypertarget{The model}{}
 \section{The model}
 
-I now discuss the main components of the model informally, and leave its full
+In this section, I discuss the main components of the model informally, and leave its full
 recursive mathematical representation for Section \ref{sec:recursive}.
 
 \subsubsection{Time, mortality, and utility}
@@ -78,15 +88,16 @@ be used in both infinite and finite-horizon versions.
 
 Agents face an exogenous risk of death $\delta_t$ each period, which becomes certain at the 
 maximum age of the finite-horizon version. There are no intentional bequests; agents
-will consume all of their resources if they reach the last period, but they can leave
+will consume all of their resources if they reach the terminal period, but they can leave
 accidental bequests upon premature death.
 
 In each period, agents derive utility from consumption only. Their utility function
 follows a constant relative risk aversion specification. Formally, for a level of 
 consumption $C$, the agent derives instant utility
 \begin{equation}
-	u(C) = \frac{C^{1-\rho}}{1- \rho}.
+	u(C) = \frac{C^{1-\rho}}{1- \rho},
 \end{equation}
+where $\rho$ is the agent's coefficient of relative risk aversion.
 
 \subsubsection{Income process}
 
@@ -191,7 +202,7 @@ and that of agent who is allowed to rebalance is
 The problem can be normalized by permanent income, following
 \cite{Carroll2020solvingmicrodsops}. Using lower case variables to
 denote their upper-case counterparts normalized by permanent income ($x_t \equiv X_t/P_t$)
-and defining $\tilde{\Gamma}_t = \Gamma_{t}\psi_{t}$, we can write
+and defining $\tilde{\Gamma}_t \equiv \Gamma_{t}\psi_{t}$, we can write
 normalized problems
 \begin{equation}\label{eq:bellman_NAdj_norm}
 \input{\EqDir/bellman_NAdj_norm}
@@ -323,8 +334,8 @@ occurs with a $75\%$ chance ($p = 0.25$). The risky withdrawal is $\tau = 0$.
 
 \input{\econtexRoot/Figures/inf_dFunc}
 
-The first stage of an agent's period (if he is allowed to rebalance) is to
-solve the asset-rebalancing problem (Equation \ref{eq:bellman_reb}). The solution
+The first stage of an agent's period (if he is allowed to rebalance) consists of
+solving the asset-rebalancing problem (Equation \ref{eq:bellman_reb}). The solution
 to this problem is the rebalancing fraction function $\dFrac(m,n)$, which I present
 in Figure \ref{fig:inf_dFunc} for the different parametrizations and various
 combinations of $(m,n)$. The figure shows how individuals with low risk-free resources
@@ -343,7 +354,7 @@ Figure \ref{fig:inf_ShareFunc} presents the policy function $\Contr(\tilde{m},\t
 for various $(\tilde{m},\tilde{n})$ combinations. The income deduction scheme
 becomes irrelevant in the ``Base'' and ``Tax'' versions of the model, since
 agents are always able to rebalance their assets ($p=1$) and thus pre-committing
-funds has o benefits. The figure shows that when $p<1$ agents will
+funds has no benefits. The figure shows that when $p<1$ agents will
 make use of the system, especially if the agent has low risky asset balances.
 
 \input{\econtexRoot/Figures/inf_cFunc}
@@ -435,7 +446,7 @@ asset balances, the risky share of savings, and the income deduction share
 for all parametrizations.
 
 The age profiles of the ``Base'' and ``Tax'' parametrizations are similar.
-The risky share of savings, which I define as $\tilde{N}/(A + \tilde{M})$,
+The risky share of savings, which I define as $\tilde{N}/(A + \tilde{N})$,
 follows the same pattern as in \cite{Cocco2005rfs}, starting high and declining
 with age. The main difference between both calibrations is that the tax
 makes agents' risky share lower when they are young (because of an unwillingness
@@ -467,16 +478,6 @@ other types of agent.
 
 These exercises show how the different financial frictions that the model can
 accommodate generate different consumption, savings, and portfolio patterns.
-
-
-\hypertarget{Conclusion}{}
-\section{Conclusion}
-
-\hypertarget{Puzzles-and-Questions}{}
-\section{Puzzles and Questions}\label{sec:Puzzles}
-
-\hypertarget{Robustness Analyses}{}
-\section{Robustness Analyses}
 
 \clearpage\vfill\eject
 
