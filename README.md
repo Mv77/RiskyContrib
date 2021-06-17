@@ -14,6 +14,8 @@ mvelasq2@jhu.edu
 Johns Hopkins University
 </p>
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4974234.svg)](https://doi.org/10.5281/zenodo.4974234)
+
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Mv77/RiskyContrib/main?filepath=Code%2FPython%2FRiskyContrib.ipynb)
 
 
