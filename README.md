@@ -24,3 +24,18 @@ simulate it in the [HARK](https://econ-ark.org/toolkit) toolkit. The model repre
 the other risk-free---to insure against fluctuations in his income, but faces frictions to transferring funds between assets. The flexibility of its
 implementation and its inclusion in the HARK toolkit will allow users to adapt the model to realistic life-cycle calibrations, and also to embedded it in
 heterogeneous-agents macroeconomic models.
+
+BibTex entry
+```
+@software{mateo_velasquez_giraldo_2021_4977915,
+  author       = {Mateo Velásquez-Giraldo},
+  title        = {{Mv77/RiskyContrib: A Two-Asset Savings Model with 
+                   an Income-Contribution Scheme}},
+  month        = jun,
+  year         = 2021,
+  publisher    = {Zenodo},
+  version      = {v1.0.1},
+  doi          = {10.5281/zenodo.4977915},
+  url          = {https://doi.org/10.5281/zenodo.4977915}
+}
+```
