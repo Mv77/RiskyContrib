@@ -3,5 +3,5 @@ numpy
 scipy
 pandas
 seaborn
-git+git://github.com/Mv77/HARK@NewContrib#egg=econ-ark
+git+git://github.com/econ-ark/HARK
 jupyter_contrib_nbextensions
