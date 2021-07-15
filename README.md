@@ -18,12 +18,49 @@ Cite this repository: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.497791
 
 Launch a demonstration: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Mv77/RiskyContrib/main?filepath=Code%2FPython%2FRiskyContrib.ipynb)
 
+### Summary
 
 This repository presents a two-asset consumption-savings model and serves as the documentation of an open-source implementation of methods to solve and
 simulate it in the [HARK](https://econ-ark.org/toolkit) toolkit. The model represents an agent who can save using two different assets---one risky and
 the other risk-free---to insure against fluctuations in his income, but faces frictions to transferring funds between assets. The flexibility of its
 implementation and its inclusion in the HARK toolkit will allow users to adapt the model to realistic life-cycle calibrations, and also to embedded it in
 heterogeneous-agents macroeconomic models.
+
+### Contents
+
+- The main document of the repository is [`./RiskyContrib.pdf`](https://github.com/Mv77/RiskyContrib/blob/main/RiskyContrib.pdf).
+- A shorter jupyter notebook with the main results can be found in `Code/Python/RiskyContrib.ipynb` and can be launched live by clicking the following badge [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Mv77/RiskyContrib/main?filepath=Code%2FPython%2FRiskyContrib.ipynb). 
+
+### Replicating the results
+
+To reproduce all the results in [`./RiskyContrib.pdf`](https://github.com/Mv77/RiskyContrib/blob/main/RiskyContrib.pdf) you can
+
+##### Use [nbreproduce](https://github.com/econ-ark/nbreproduce) (requires Docker to be installed on the machine).
+
+```
+# Clone this repository
+$ git clone https://github.com/Mv77/RiskyContrib
+
+# Change working directory to RiskyContrib
+$ cd RiskyContrib
+
+# Install nbreproduce
+$ pip install nbreproduce
+
+# Reproduce all results using nbreproduce
+$ nbreproduce
+```
+
+##### Install a local conda environment and execute the Jupyter notebook.
+
+```
+$ conda env create -f environment.yml
+$ conda activate RiskyContrib
+# execute the script to create figures
+$ ipython do_ALL.py
+```
+
+### Bibliographic Information
 
 BibTex entry
 ```
