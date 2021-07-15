@@ -2,7 +2,7 @@
 import sys
 sys.path.append('./Code/Python/')
 
-import time 
+import time
 
 # %% Set up plot displays
 from IPython import get_ipython
@@ -25,4 +25,4 @@ print('2. Solve and simulate life-cycle versions.')
 import Simulations.example_LC_ConsRiskyContribModel
 
 # Print time
-print('Runtime was {} minutes'.format((time.process_time() - start))/60)
+print('Runtime was {} minutes'.format((time.process_time() - start)/60.0))
