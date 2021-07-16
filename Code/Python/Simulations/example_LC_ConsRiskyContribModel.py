@@ -47,7 +47,8 @@ par_LC_base["tau"] = 0.0
 par_LC_base["DiscreteShareBool"] = False
 par_LC_base["vFuncBool"] = False
 
-# Temporarily make grids sparser
+# Make grids coarser to improve runtime. Also increase the maximum because the
+# retirement calibration potentially generates high values of mNrm, nNrm.
 par_LC_base.update(
     {"aXtraCount": 30, "mNrmCount": 30, "nNrmCount": 30,
      "mNrmMax": 500, "nNrmMax":500}

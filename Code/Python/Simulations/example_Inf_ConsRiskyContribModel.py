@@ -47,7 +47,7 @@ par_infinite_base["tau"] = 0.0
 par_infinite_base["DiscreteShareBool"] = False
 par_infinite_base["vFuncBool"] = False
 
-# Temporarily make grids sparser
+# Make grids coarser to improve runtime.
 par_infinite_base.update(
     {"aXtraCount": 30, "mNrmCount": 30, "nNrmCount": 30,}
 )
