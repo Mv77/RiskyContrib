@@ -51,7 +51,7 @@ $ pip install nbreproduce
 $ nbreproduce
 ```
 
-##### Install a local conda environment and execute the Jupyter notebook.
+##### Install a local conda environment and execute a script that generates all the results.
 
 ```
 $ conda env create -f environment.yml
