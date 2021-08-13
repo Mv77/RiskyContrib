@@ -8,7 +8,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.11.4
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -317,7 +317,7 @@ par_LC_base["vFuncBool"] = False
 
 # Make grids go up to higher levels of resources
 # (one of the calibration produces high levels of nNrm)
-par_LC_base.update({"mNrmMax": 500, "nNrmMax":500})
+par_LC_base.update({"mNrmMax": 500, "nNrmMax":1000})
 
 # %% A version with the tax code_folding=[0]
 # Alternative calibrations
@@ -481,7 +481,7 @@ g.set_axis_labels("$\\tilde{m}$", "Consumption: $c$")
 # Simulation
 
 n_agents = 100
-t_sim    = 500
+t_sim    = 200
 profiles = []
 for agent in agents:
     agents[agent].AgentCount = n_agents
