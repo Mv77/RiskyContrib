@@ -3,5 +3,5 @@ numpy
 scipy
 pandas
 seaborn
-git+git://github.com/Mv77/HARK@05c4464da98b1b262b42ba6ef7ef16f1edfd428f
+git+git://github.com/econ-ark/HARK@760df611a6ec2ff147d00b7d866dbab6fc4e18a1
 jupyter_contrib_nbextensions
